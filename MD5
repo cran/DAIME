@@ -1,0 +1,12 @@
+c957b27e290247c9fad679cbca29d95a *DESCRIPTION
+c939d2de04da3452aacac908958e2797 *NAMESPACE
+606b7c2a0649a29335c89f332edf7e15 *R/strattotimepointcont.R
+8f68c50c9dbe41c33cf82ee5c0ea3131 *R/strattotimeratecont.R
+71324acbd4a1ae6b7a21e80764a6cd8d *R/timetostratpointcont.R
+b380d30bb153a01b0d08b880767ac483 *R/timetostratratecont.R
+ee0bb3f74a540c14684a21ade0bef4c8 *build/partial.rdb
+853a5e0f4c3ba3966828a15f1ff25036 *man/DAIME-package.Rd
+568f893e3fbb6213f6523e1babdcfded *man/strattotimepointcont.Rd
+fc7cc9ceeb4ce6808ca991f7c72f2b3b *man/strattotimeratecont.Rd
+f595f77fdf644af7527a4ab9ffe76bd9 *man/timetostratpointcont.Rd
+cd67cab27ddc5bafb4081de508180b5d *man/timetostratratecont.Rd
