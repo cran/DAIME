@@ -1,29 +1,30 @@
-timetostratpointcont <-
-function(x,xdep,ydep){
+timetostratratebin <-
+function(binborder,depoval,signalval,pos=NULL){
   #check input
   {
-    stopifnot(is.unsorted(xdep,strictly=TRUE)==FALSE,length(xdep)==length(ydep))
+    stopifnot(is.unsorted(binborder,strictly=TRUE)==FALSE,(length(binborder)-1)==length(depoval),(length(binborder)-1)==length(signalval),min(signalval)>=0)
   }
   #preparing input data
   {
-    lims=c(min(xdep),max(xdep)) #limits where both signal and deporate are defined
+    lims=c(min(binborder),max(binborder)) #limits where both signal and deporate are defined
+    if(is.null(pos)){ #default setting for pos: if no points for evaluation are given
+      pos=seq(from=lims[1],to=lims[2],length.out=min(1000,30*length(binborder)))
+    }
     #remove points for which both the deposition rate and the signal are undefined
-    relevantpoints=(x>=lims[1] & x<=lims[2])
-    xt=x[relevantpoints]
+    relevantpoints=(pos>=lims[1] & pos<=lims[2])
+    xt=pos[relevantpoints]
     #initialize storage for potential hiatuses
     hiatii=numeric()
-    #determine all relevant function values of the depositon rate
-    xvals=sort(unique(c(xdep,xt)))
-    yvals=approx(xdep,ydep,xout=xvals,yleft=0,yright=0)[[2]]
+    #determine all relevant x values
+    xvals=binborder
   }
-  #build age model by integrating over the deposition rate using the trapezoidal rule
+  #build age model by integrating over the deposition rate
   {
-    intvals = c(0,cumsum((0.5*(c(0,yvals)+c(yvals,0))*(c(xvals,0)-c(0,xvals)))[2:length(xvals)]))                              
+    intvals=cumsum(c(0,diff(xvals)*depoval))
   }
-  
   #if sediment is removed/sediment accumulation is stagnating, adjust age model:
   {
-    if (min(ydep)<=0){ 
+    if(min(depoval)<=0){
       #remove sections where sedimetn is removed
       ##define starting values of running indexes for the removal of sediment
       xvals=c(min(xvals),min(xvals),xvals) #duplicate values to avoid index malfunction later
@@ -44,49 +45,37 @@ function(x,xdep,ydep){
           highindex=highindex-1 #change running indices
           intvals[highindex]=highpoint #adjust sedimetn to the highpoint, i.e. the highest point that will not be removed after the hiatus /erode
         }
-        else if(intvals[highindex-1]>highpoint & intvals[highindex-2]<highpoint){ #if transition of sediment removal to accumulation
-          x1=xvals[highindex-2]
-          x2=xvals[highindex-1]
-          y=approx(xdep,ydep,xout=c(x1,x2))[[2]]
-          if(y[1]==y[2]){
-            m=(intvals[highindex-1]-intvals[highindex-2])/(x2-x1)
-            c=intvals[highindex-2]-m*x1
-            xnew=(highpoint-c)/m
-          }
-          else{
-            a=0.5*(y[2]-y[1])/(x2-x1)
-            b=y[1]-2*a*x1
-            c=-a*x2^2-b*x2+intvals[highindex-1]
-            xnew=(-b+sqrt(b^2-4*a*(c-highpoint)))/(2*a)
-            if(xnew < x1 | xnew>x2){
-              xnew=(-b-sqrt(b^2-4*a*(c-highpoint)))/(2*a)
-            }
-          }
-          intvals[highindex-1]=highpoint 
+        else if(intvals[highindex-1]>highpoint & intvals[highindex-2]<highpoint){ #case 4: transition from removal to accumulation
+          m=(intvals[highindex-1]-intvals[highindex-2])/(xvals[highindex-1]-xvals[highindex-2]) #determien at which value the sedimetn crosses the value "highpoint"
+          xnew=(highpoint-(intvals[highindex-2]-m*xvals[highindex-2]))/m
+          intvals[highindex-1]=highpoint #remove sedimetn
+          xvals=c(xvals[1:(highindex-2)],xnew,xvals[(highindex-1):length(xvals)]) #insert new bin boundary at the value where the sediemtn is taking on the value highpoint
           intvals=c(intvals[1:(highindex-2)],highpoint,intvals[(highindex-1):length(intvals)])
-          xvals=c(xvals[1:(highindex-2)],xnew,xvals[(highindex-1):length(xvals)]) 
-          highindex=highindex-1
           hiatii=c(hiatii,highpoint)
+          highindex=highindex-1
         }
       }
-      intvals=intvals[-c(1,2)] #remove additional values attached in the beginning
       xvals=xvals[-c(1,2)]
+      intvals=intvals[-c(1,2)]
     }
   }
   #transform points from time into height
   {
     xtrans=approx(xvals,intvals,xout=xt)[[2]] #transform time into stratigraphic height 
+    ytrans=approx(binborder,c(signalval,tail(signalval,1)),method='constant',xout=xt)[[2]]/approx(binborder,c(depoval,tail(depoval,1)),method='constant',xout=xt)[[2]] #values of the stratigraphic rate at the transformed points
     #remove points that coincide with a hiatus
     if(length(hiatii)>0){
       hiatii=unique(hiatii)
       for(i in 1:length(hiatii)){
+        ytrans[xtrans==hiatii[i]]=NA
         xtrans[xtrans==hiatii[i]]=NA
       }
     }
   }
-  #adjust output size to input size
+  #adjust output to input size
   {
     xtrans=replace(rep(NA,length(relevantpoints)),relevantpoints,xtrans)
+    ytrans=replace(rep(NA,length(relevantpoints)),relevantpoints,ytrans)
   }
-  return(list(height=xtrans,time=x))
+  return(list(height=xtrans,val=ytrans))
 }

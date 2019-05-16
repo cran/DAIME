@@ -1,0 +1,56 @@
+---
+title: "DAIME"
+author: "Niklas Hohmann"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DAIME}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions.
+
+## Introduction
+Changing deposition rates alter the stratigraphic distribution of fossils by altering the amount of sediment placed between individual fossils. The same holds for any information conveyed by the rock record, since different deposition rates alter the time "stored" in some fixed thickness of rock, which accordingly alters interpretations of rates in the rock record.
+
+The DAIME package allows to model the effect of changing deposition rates on stratigraphic patterns, and can correct the effects of changing deposition rates on data.
+It can be applied to 
+
+## Structure of the Package
+The package consists of eight functions, whose names are structured according to their usage.
+
+1. If you want to transform information from time into stratigraphic height, e.g. to model the effects of changing deposition rates on stratigraphic patterns, use functions beginning with `timetostrat`
+2. If you want to transform information from stratigraphic height into time, e.g. to preprocess data or reconstruct rates in time, use functions beginning with `strattotime`
+
+Next, what type of information is supposed to be transformed?
+
+1. If you want to transform points (in time/stratigraphic height), isotope ratios, or create age models use functions with the middle part named `point`
+2. If you want to transform rates, e.g. fossil occurrences, chemical input into the system, use functions with the middle part named `rate`
+
+Last, what structure has your deposition rate (or input rate if the middle name is `rate`)?
+
+1. If all rates are continuous/can be approximated by a piecewise linear function, use the ending `cont`
+2. If all rates are binned, use the ending `cont`
+
+As an example: To transform isotope ratios from stratigraphic height into time with a binned deposition rate, use `strattotime` in combination with `point` and `bin`, meaning that the function `strattotimepointbin` is the suitable function.
+
+Overall, the package contains the following functions:
+
+1.  `strattotimepointbin`
+2.  `strattotimepointcont`
+3.  `strattotimeratebin`
+4.  `strattotimeratecont`
+5.  `timetostratpointbin`
+6.  `timetostratpointcont`
+7.  `timetostratratebin`
+8.  `timetostratratecont`
+
+## Examples
+For examples please refer to the help pages of the corresponding functions

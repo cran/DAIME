@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Introduction</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<p>This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions.</p>
+
+<h2>Introduction</h2>
+
+<p>Changing deposition rates alter the stratigraphic distribution of fossils by altering the amount of sediment placed between individual fossils. The same holds for any information conveyed by the rock record, since different deposition rates alter the time &ldquo;stored&rdquo; in some fixed thickness of rock, which accordingly alters interpretations of rates in the rock record.</p>
+
+<p>The DAIME package allows to model the effect of changing deposition rates on stratigraphic patterns, and can correct the effects of changing deposition rates on data.
+It can be applied to </p>
+
+<h2>Structure of the Package</h2>
+
+<p>The package consists of eight functions, whose names are structured according to their usage.</p>
+
+<ol>
+<li>If you want to transform information from time into stratigraphic height, e.g. to model the effects of changing deposition rates on stratigraphic patterns, use functions beginning with <code>timetostrat</code></li>
+<li>If you want to transform information from stratigraphic height into time, e.g. to preprocess data or reconstruct rates in time, use functions beginning with <code>strattotime</code></li>
+</ol>
+
+<p>Next, what type of information is supposed to be transformed?</p>
+
+<ol>
+<li>If you want to transform points (in time/stratigraphic height), isotope ratios, or create age models use functions with the middle part named <code>point</code></li>
+<li>If you want to transform rates, e.g. fossil occurrences, chemical input into the system, use functions with the middle part named <code>rate</code></li>
+</ol>
+
+<p>Last, what structure has your deposition rate (or input rate if the middle name is <code>rate</code>)?</p>
+
+<ol>
+<li>If all rates are continuous/can be approximated by a piecewise linear function, use the ending <code>cont</code></li>
+<li>If all rates are binned, use the ending <code>cont</code></li>
+</ol>
+
+<p>As an example: To transform isotope ratios from stratigraphic height into time with a binned deposition rate, use <code>strattotime</code> in combination with <code>point</code> and <code>bin</code>, meaning that the function <code>strattotimepointbin</code> is the suitable function.</p>
+
+<p>Overall, the package contains the following functions:</p>
+
+<ol>
+<li> <code>strattotimepointbin</code></li>
+<li> <code>strattotimepointcont</code></li>
+<li> <code>strattotimeratebin</code></li>
+<li> <code>strattotimeratecont</code></li>
+<li> <code>timetostratpointbin</code></li>
+<li> <code>timetostratpointcont</code></li>
+<li> <code>timetostratratebin</code></li>
+<li> <code>timetostratratecont</code></li>
+</ol>
+
+<h2>Examples</h2>
+
+<p>For examples please refer to the help pages of the corresponding functions</p>
+
+</body>
+
+</html>
