@@ -2,7 +2,7 @@ timetostratratecont <-
 function(xdep,ydep,xsig,ysig,pos=NULL){
   #check input
   {
-    stopifnot(is.unsorted(xdep,strictly=TRUE)==FALSE,is.unsorted(xsig,strictly=TRUE)==FALSE,length(xdep)==length(ydep),length(xsig)==length(ysig),length(xdep)==length(xsig),min(ysig)>=0)
+    stopifnot(is.unsorted(xdep,strictly=TRUE)==FALSE,is.unsorted(xsig,strictly=TRUE)==FALSE,length(xdep)==length(ydep),length(xsig)==length(ysig),min(ysig)>=0)
   }
   #preparing input data
   {
