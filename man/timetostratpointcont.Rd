@@ -6,9 +6,7 @@ Transform Points and Isotope Ratios from Time into Stratigraphic Height (Continu
 }
 
 \description{
-This function takes a continuous deposition rate to determined what stratigraphic height of a section was deposited at a given time.
-
-This can be used to create age models, determine the location of single samples in the outcrop that were deposited at a given time, and transform isotope ratios from time into stratigraphic height (see examples).
+This function takes a continuous deposition rate to determined what stratigraphic height of a section was deposited at a given time. Essentially a wrapper of \code{pointtransform(...,direction='time to height',depositionmodel='piecewise linear deposition rate')} kept for backwards compatibility of the package.
 }
 
 \usage{
@@ -23,14 +21,14 @@ Vector containing the times whose stratigraphic heights are to be determined
 Vector of strictly increasing real numbers 
 }
   \item{ydep}{
-Vector of the same length of \code{xdep}, containing strictly positive real numbers. \code{xdep} and \code{ydep} define the deposition rate in the sense that \code{depositionrate=approxfun(xdep,ydep)}.
+Vector of the same length of \code{xdep}. \code{xdep} and \code{ydep} define the deposition rate in the sense that \code{depositionrate=approxfun(xdep,ydep)}.
 }
 }
 
 \value{
 Returns a list containing
 \item{height }{vector containing the stratigraphic heights that were deposited at the times given by the input \code{x}}
-\item{time }{vector containing the times at which the stratigraphic heights given by \code{height} were deposited. Essentially a duplicate of the input \code{x}}
+\item{age }{vector containing the ages at which the stratigraphic heights given by \code{height} were deposited. Essentially a duplicate of the input \code{x}}
 Output of \code{NA} in \code{height} indicates that some values coincide with a hiatus or are located at places where the deposition rate is undefined.
 }
 
@@ -43,8 +41,7 @@ Niklas Hohmann
 }
 
 \seealso{
-\code{\link{timetostratratecont}} for the transformation of rates from time into stratigraphic height,
-\code{\link{strattotimepointcont}} for the transformation of single samples or isotope ratios from stratigraphic height into time.
+\code{\link{pointtransform}} for the more general function underlying this wrapper
 
 For an overview of the functions in the DAIME package, see its vignette (available via \code{vignette("DAIME")} )
 }
@@ -64,7 +61,7 @@ timetostratpointcont(9,xdep,ydep)
 time=seq(min(xdep),max(xdep),length.out=100) 
 reslist=timetostratpointcont(time,xdep,ydep)
 #plot age model
-plot(reslist$height,reslist$time,type='l',ylab='Time',xlab='Stratigraphic Height',main='Age model')
+plot(reslist$height,reslist$age,type='l',ylab='Time',xlab='Stratigraphic Height',main='Age model')
 #age model with Removal of sediment
 #define deposition rate with negative deposition rate, e.g. removal of sediment
 xdep=seq(0,12,length.out=100)
@@ -74,7 +71,7 @@ plot(xdep,ydep,main='Deposition Rate',xlab='Time',ylab='Deposition Rate')
 #sediment removal is done automatically. e.g. create age model as before:
 reslist=timetostratpointcont(time,xdep,ydep)
 #plot age model
-plot(reslist$height,reslist$time,type='l',ylab='Time',xlab='Stratigraphic Height',main='Age model')
+plot(reslist$height,reslist$age,type='l',ylab='Time',xlab='Stratigraphic Height',main='Age model')
 
 
 #transform isotope ratio curves

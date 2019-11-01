@@ -5,9 +5,7 @@
 Transform Points and Isotope Ratios from Stratigraphic Height into Time (Binned)
 }
 \description{
-This function takes a binned deposition rate and reconstructs at what time a given stratigraphic height was deposited.
-
-This can be used to create age models, determine the time of deposition of single samples in the outcrop, and transform isotope ratios from stratigraphic height into time (see examples).
+This function takes a binned deposition rate and reconstructs at what time a given stratigraphic height was deposited. Essentially a wrapper of \code{pointtransform(...,direction='height to time',depositionmodel='binned deposition rate')} kept for backwards compatibility of the package.
 }
 \usage{
 strattotimepointbin(x, binborder, depoval, hiatuslist = list(),
@@ -34,9 +32,9 @@ OPTIONAL, default is "sediment per time". Either "sediment per time" or "time pe
 
 \value{
 Returns a list containing
-\item{time }{vector containing times of deposition of the stratigraphic heights given by the input \code{x}}
-\item{height }{vector containing the heights that were deposited at the times given by \code{time}. Essentially a duplicate of the input \code{x}}
-Output of \code{NA} in \code{time} indicates that some values coincide with a hiatus or are located at places where the deposition rate is undefined.
+\item{age }{vector containing ages of deposition of the stratigraphic heights given by the input \code{x}}
+\item{height }{vector containing the heights that were deposited at the times given by \code{age}. Essentially a duplicate of the input \code{x}}
+Output of \code{NA} in \code{age} indicates that some values coincide with a hiatus or are located at places where the deposition rate is undefined.
 }
 
 \references{
@@ -48,6 +46,8 @@ Niklas Hohmann
 }
 
 \seealso{
+\code{\link{pointtransform}} for the more general function underlying this wrapper
+
 For an overview of the functions in the DAIME package, see its vignette (available via \code{vignette("DAIME")} )
 }
 
@@ -69,13 +69,13 @@ stratheight=seq(min(binborder),max(binborder),length.out=100)
 reslist=strattotimepointbin(stratheight,binborder,depoval,unit=usedunit)
 #plot age model
 usedunit="sediment per time"
-plot(reslist$time,reslist$height,xlab='Time',ylab='Stratigraphic Height',
+plot(reslist$age,reslist$height,xlab='Time',ylab='Stratigraphic Height',
   main=paste('Age model with unit',usedunit))
 #create age model but with other units for sedimentn input
 usedunit='time per sediment'
 reslist=strattotimepointbin(stratheight,binborder,depoval,unit=usedunit)
 #plot age model (note the difference this setting makes)
-plot(reslist$time,reslist$height,xlab='Time',ylab='Stratigraphic Height',
+plot(reslist$age,reslist$height,xlab='Time',ylab='Stratigraphic Height',
   main=paste('Age model with unit',usedunit))
 
 ##create age model with a hiatus
@@ -84,7 +84,7 @@ duration=2 #duration of the hiatus
 hiatuslist=list(c(stratigraphicheight,duration)) #required input format for hiatuses
 reslist=strattotimepointbin(stratheight,binborder,depoval,hiatuslist=hiatuslist)
 #!using default setting for units again!
-plot(reslist$time,reslist$height,xlab='Time',ylab='stratigraphic height') 
+plot(reslist$age,reslist$height,xlab='Time',ylab='stratigraphic height') 
 
 ##Transform isotope ratios
 depoval=c(1,4,0.1,2,2) 
@@ -95,7 +95,7 @@ plot(samplelocation,isotoperatio,type='l',xlab='Stratigraphic Height',ylab='Isot
 #transform only (!) sample locations, NOT values
 reslist=strattotimepointbin(samplelocation,binborder,depoval)
 #Isotope ratios in time 
-plot(reslist$time,isotoperatio,type='l',xlab='Time',ylab='Isotope Ratio')
+plot(reslist$age,isotoperatio,type='l',xlab='Time',ylab='Isotope Ratio')
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

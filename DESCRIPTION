@@ -1,8 +1,8 @@
 Package: DAIME
 Type: Package
 Title: Effects of Changing Deposition Rates
-Version: 1.1
-Date: 2019-05-16
+Version: 2.0
+Date: 2019-10-10
 Author: Niklas Hohmann
 Maintainer: Niklas Hohmann <Niklas.Hohmann@fau.de>
 Description: Reverse and model the effects of changing deposition rates on geological data and rates. Based on Hohmann (2018) <doi:10.13140/RG.2.2.23372.51841> .
@@ -11,6 +11,6 @@ Depends: stats, utils
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-06-11 02:48:52 UTC; nick
+Packaged: 2019-11-01 11:00:56 UTC; nick
 Repository: CRAN
-Date/Publication: 2019-06-11 04:10:03 UTC
+Date/Publication: 2019-11-01 11:10:06 UTC

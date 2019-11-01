@@ -17,7 +17,45 @@ window.onload = function() {
 };
 </script>
 
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
 
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
 
 
 
@@ -163,52 +201,98 @@ hr {
 </head>
 
 <body>
-<p>This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions.</p>
+<p>This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions and some explantions regarding their options.</p>
 
 <h2>Introduction</h2>
 
-<p>Changing deposition rates alter the stratigraphic distribution of fossils by altering the amount of sediment placed between individual fossils. The same holds for any information conveyed by the rock record, since different deposition rates alter the time &ldquo;stored&rdquo; in some fixed thickness of rock, which accordingly alters interpretations of rates in the rock record.</p>
+<p>Changing deposition rates determine how much time it takes to deposit a given thickness of sediment. This determines how diluted or condensed the information contained in this sediment is, and accordingly alters our perception of time and speed when working with the rock record.</p>
 
-<p>The DAIME package allows to model the effect of changing deposition rates on stratigraphic patterns, and can correct the effects of changing deposition rates on data.
-It can be applied to </p>
-
-<h2>Structure of the Package</h2>
-
-<p>The package consists of eight functions, whose names are structured according to their usage.</p>
+<p>The DAIME package allows to</p>
 
 <ol>
-<li>If you want to transform information from time into stratigraphic height, e.g. to model the effects of changing deposition rates on stratigraphic patterns, use functions beginning with <code>timetostrat</code></li>
-<li>If you want to transform information from stratigraphic height into time, e.g. to preprocess data or reconstruct rates in time, use functions beginning with <code>strattotime</code></li>
+<li><p>model how changing deposition rates alter the expression of temporal patterns in sections</p></li>
+<li><p>account for the effects of changing deposition rates in data derived from the rock record</p></li>
 </ol>
 
-<p>Next, what type of information is supposed to be transformed?</p>
+<h2>Available Functions</h2>
+
+<p>The 2.0 version of the package contains the following core functions:</p>
 
 <ol>
-<li>If you want to transform points (in time/stratigraphic height), isotope ratios, or create age models use functions with the middle part named <code>point</code></li>
-<li>If you want to transform rates, e.g. fossil occurrences, chemical input into the system, use functions with the middle part named <code>rate</code></li>
+<li><p><code>pointtransform</code> to transform the location of individual points from time into stratigraphic height and vice versa. This can also be used to create age models from deposition rates and transform isotope ratios between time and height</p></li>
+<li><p><code>patterntransform</code> to transform patterns from time into stratigraphic height and vice versa. A pattern can be any grain-based input into the sediment (e.g. fossil occurrences, some geochemical proxies) and rates derived from it (e.g. rate of morphological change or first/last fossil occurrences, both derived from fossil occurrences)</p></li>
 </ol>
 
-<p>Last, what structure has your deposition rate (or input rate if the middle name is <code>rate</code>)?</p>
+<p>It further contains the following supplementary function:</p>
 
 <ol>
-<li>If all rates are continuous/can be approximated by a piecewise linear function, use the ending <code>cont</code></li>
-<li>If all rates are binned, use the ending <code>cont</code></li>
+<li><code>patterntodepositionmodel</code> to construct a deposition model based on the sedimentary condensation/dilution of a known pattern</li>
 </ol>
 
-<p>As an example: To transform isotope ratios from stratigraphic height into time with a binned deposition rate, use <code>strattotime</code> in combination with <code>point</code> and <code>bin</code>, meaning that the function <code>strattotimepointbin</code> is the suitable function.</p>
+<p>In addition to that, the following functions are available for backwards compatibility:</p>
 
-<p>Overall, the package contains the following functions:</p>
+<ul>
+<li><p><code>strattotimepointbin</code>, <code>strattotimepointcont</code>, <code>timetostratpointbin</code>, and<code>timetostratpointcont</code> as wrappers of <code>pointtransform</code></p></li>
+<li><p><code>strattotimeratebin</code>, <code>strattotimeratecont</code>, <code>timetostratratebin</code>, and <code>timetostratratecont</code> as wrappers of <code>patterntransform</code></p></li>
+</ul>
+
+<h2>Nomenclature</h2>
+
+<ul>
+<li>Patterns can be a rate of anything that is deposited with the sediment like a grain and all information derived from these grains. This can be rate of fossil occurrences, first/last fossil occurrences, et. in general, patterns reflect (input/output) rates of/to the sediment. Patterns need to be positive (but not strictly).</li>
+<li>Points can be the time/stratigraphic height of any object that is deposited in the sediment as a type of grain. This can for example be a shell/fossil.</li>
+</ul>
+
+<h2>Deposition models</h2>
+
+<p>Deposition models are central to the DAIME package and describe how sediment input into the system changes through time. There are three ways to hand a deposition model over to the functions <code>pointtransform</code> and <code>patterntransform</code>: as age model, as piecewise linear deposition rate, and as binned deposition rate. This is determined by the <code>depositionmodel</code> option in <code>pointtransform</code> and <code>patterntransform</code>.</p>
+
+<p>The function <code>patterntodepositionmodel</code> can be used to create a deposition model based on the dilution/condensation of a known pattern which can then be handed over to <code>pointtransform</code> or <code>patterntransform</code>.</p>
+
+<h3>Age models</h3>
+
+<p>Age models assign a stratigraphic height to an age and vice versa. They are described via two vectors I will here call <code>agemodelage</code> and <code>agemodelheight</code>. The entry <code>agemodelage[i]</code> is the age of the sediment at the stratigraphic height <code>agemodelheight[i]</code> and vice versa.</p>
+
+<pre><code class="r">
+par(mar=c(4,4,1,0),mgp=c(2.1,0.4,0))
+agemodelage=seq(0,3,length.out = 100)
+agemodelheight=splinefunH(x=c(0,1,3),y=c(0,0.8,2),m=c(0.2,2,0.3))(agemodelage)
+plot(agemodelage,agemodelheight,type=&#39;l&#39;,xlab=&#39;Time/Age \n ( agemodelage )&#39;,ylab=&#39;Stratigraphic Height \n ( agemodelheight )&#39;,main=&#39;Age Model&#39;,lwd=4)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk fig1"/></p>
+
+<p>When the functions are used with <code>direction</code> in the setting <code>height to time</code>, <code>agemodelheight</code> corresponds to <code>xdep</code> and <code>agemodelage</code> corresponds to <code>ydep</code>. In this case, both <code>agemodelage</code> and <code>agemodelheight</code> need to be strictly increasing. Hiatuses can be inserted into the age model using the <code>hiatuslist</code> option.</p>
+
+<p>When <code>direction</code> is set to <code>time to height</code>, <code>agemodelage</code> corresponds to <code>xdep</code>and <code>agemodelheight</code> corresponds to <code>ydep</code>. Here, <code>agemodelheight</code> can also be decreasing or stagnating. This will be interpreted as erosion or periods of nondeposition, and accordingly incoorporated into the transformation.</p>
+
+<h3>Deposition Rates</h3>
+
+<p>Deposition rates describe the sediment input into a system through time. They can be handed over either as piecewise linear deposition rate by setting <code>depositionmodel</code> to <code>piecewise linear deposition rate</code> or as binned deposition rate by setting <code>depositionmodel</code> to <code>binned deposition rate</code>.</p>
+
+<p>For piecewise linear deposition rates, the deposition rate is given by <code>depositionrate=approxfun(xdep,ydep)</code>. Accordingly <code>xdep</code> and <code>ydep</code> need to be of the same size.</p>
+
+<p>For binned deposition rates, the values of the deposition rate between <code>xdep[i]</code> and <code>xdep[i+1]</code> is given by <code>ydep[i]</code>. Accordingly <code>ydep</code> is one entry shorter than <code>xdep</code></p>
+
+<p>When direction is set to <code>height to time</code>, deposition rates need to be strictly positive, since negative deposition rates (=erosion) would not be visible in the section. In this case, hiatuses can be inserted using the <code>hiatuslist</code> option.
+When direction is set to <code>time to height</code>, deposition rates can also be negative, which is interpreted as erosion and accordingly incorporated into the transformation.</p>
+
+<p>In the case of the transformation from height to time, the additional option <code>unit</code>is available. This is since deposition rates in the section can be described in two ways:</p>
 
 <ol>
-<li> <code>strattotimepointbin</code></li>
-<li> <code>strattotimepointcont</code></li>
-<li> <code>strattotimeratebin</code></li>
-<li> <code>strattotimeratecont</code></li>
-<li> <code>timetostratpointbin</code></li>
-<li> <code>timetostratpointcont</code></li>
-<li> <code>timetostratratebin</code></li>
-<li> <code>timetostratratecont</code></li>
+<li><p>Either they give a description of the deposition rates with which the heights in the section were deposited</p></li>
+<li><p>Or they describe how much time is &ldquo;contained&rdquo; in sediment.</p></li>
 </ol>
+
+<p>Setting <code>unit</code> to <code>sediment per time</code> and the functions will interpret the deposition rate described by <code>xdep</code> and <code>ydep</code> in the first way. Setting is to <code>time per sediment</code> will lead to the functions interpreting the deposition rates in the second way.</p>
+
+<p>NOTE: The default setting is <code>unit=&#39;sediment per time&#39;</code>. For the effects of this options see the examples given in the help pages of <code>pointtransform</code> and <code>patterntransform</code>.</p>
+
+<h2>Isotope Ratios</h2>
+
+<p>Isotope ratios need to be treated differently than patterns, because they are based on the ratio of two inputs into the sediment. Since numerator and denominator are condensed and diluted equally, ratios are not affected by sedimentary condensation/dilution. What changes is the location of the points where those ratios were measured. Equally spaced points in stratigraphic height will generate very irregular spaces between the points when deposition rates in the section vary drastically. </p>
+
+<p>For these reasons, only the locations where isotope ratios were measured need to be transformed using <code>pointtransform</code>. The isotope ratios remain unchanged. For an example, see the help page of <code>pointtransform</code>.</p>
 
 <h2>Examples</h2>
 

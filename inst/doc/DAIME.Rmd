@@ -12,45 +12,90 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=4,
+  fig.height=4 
 )
 ```
-This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions.
+This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions and some explantions regarding their options.
 
 ## Introduction
-Changing deposition rates alter the stratigraphic distribution of fossils by altering the amount of sediment placed between individual fossils. The same holds for any information conveyed by the rock record, since different deposition rates alter the time "stored" in some fixed thickness of rock, which accordingly alters interpretations of rates in the rock record.
+Changing deposition rates determine how much time it takes to deposit a given thickness of sediment. This determines how diluted or condensed the information contained in this sediment is, and accordingly alters our perception of time and speed when working with the rock record.
 
-The DAIME package allows to model the effect of changing deposition rates on stratigraphic patterns, and can correct the effects of changing deposition rates on data.
-It can be applied to 
+The DAIME package allows to
 
-## Structure of the Package
-The package consists of eight functions, whose names are structured according to their usage.
+1. model how changing deposition rates alter the expression of temporal patterns in sections
 
-1. If you want to transform information from time into stratigraphic height, e.g. to model the effects of changing deposition rates on stratigraphic patterns, use functions beginning with `timetostrat`
-2. If you want to transform information from stratigraphic height into time, e.g. to preprocess data or reconstruct rates in time, use functions beginning with `strattotime`
+2. account for the effects of changing deposition rates in data derived from the rock record
 
-Next, what type of information is supposed to be transformed?
+## Available Functions
+The 2.0 version of the package contains the following core functions:
 
-1. If you want to transform points (in time/stratigraphic height), isotope ratios, or create age models use functions with the middle part named `point`
-2. If you want to transform rates, e.g. fossil occurrences, chemical input into the system, use functions with the middle part named `rate`
+1. `pointtransform` to transform the location of individual points from time into stratigraphic height and vice versa. This can also be used to create age models from deposition rates and transform isotope ratios between time and height
 
-Last, what structure has your deposition rate (or input rate if the middle name is `rate`)?
+2. `patterntransform` to transform patterns from time into stratigraphic height and vice versa. A pattern can be any grain-based input into the sediment (e.g. fossil occurrences, some geochemical proxies) and rates derived from it (e.g. rate of morphological change or first/last fossil occurrences, both derived from fossil occurrences)
 
-1. If all rates are continuous/can be approximated by a piecewise linear function, use the ending `cont`
-2. If all rates are binned, use the ending `cont`
+It further contains the following supplementary function:
 
-As an example: To transform isotope ratios from stratigraphic height into time with a binned deposition rate, use `strattotime` in combination with `point` and `bin`, meaning that the function `strattotimepointbin` is the suitable function.
+3. `patterntodepositionmodel` to construct a deposition model based on the sedimentary condensation/dilution of a known pattern
 
-Overall, the package contains the following functions:
+In addition to that, the following functions are available for backwards compatibility:
 
-1.  `strattotimepointbin`
-2.  `strattotimepointcont`
-3.  `strattotimeratebin`
-4.  `strattotimeratecont`
-5.  `timetostratpointbin`
-6.  `timetostratpointcont`
-7.  `timetostratratebin`
-8.  `timetostratratecont`
+* `strattotimepointbin`, `strattotimepointcont`, `timetostratpointbin`, and`timetostratpointcont` as wrappers of `pointtransform`
+
+* `strattotimeratebin`, `strattotimeratecont`, `timetostratratebin`, and `timetostratratecont` as wrappers of `patterntransform`
+
+## Nomenclature
+* Patterns can be a rate of anything that is deposited with the sediment like a grain and all information derived from these grains. This can be rate of fossil occurrences, first/last fossil occurrences, et. in general, patterns reflect (input/output) rates of/to the sediment. Patterns need to be positive (but not strictly).
+* Points can be the time/stratigraphic height of any object that is deposited in the sediment as a type of grain. This can for example be a shell/fossil.
+
+## Deposition models
+Deposition models are central to the DAIME package and describe how sediment input into the system changes through time. There are three ways to hand a deposition model over to the functions `pointtransform` and `patterntransform`: as age model, as piecewise linear deposition rate, and as binned deposition rate. This is determined by the `depositionmodel` option in `pointtransform` and `patterntransform`.
+
+The function `patterntodepositionmodel` can be used to create a deposition model based on the dilution/condensation of a known pattern which can then be handed over to `pointtransform` or `patterntransform`.
+
+### Age models
+Age models assign a stratigraphic height to an age and vice versa. They are described via two vectors I will here call `agemodelage` and `agemodelheight`. The entry `agemodelage[i]` is the age of the sediment at the stratigraphic height `agemodelheight[i]` and vice versa.
+
+```{r fig1}
+
+par(mar=c(4,4,1,0),mgp=c(2.1,0.4,0))
+agemodelage=seq(0,3,length.out = 100)
+agemodelheight=splinefunH(x=c(0,1,3),y=c(0,0.8,2),m=c(0.2,2,0.3))(agemodelage)
+plot(agemodelage,agemodelheight,type='l',xlab='Time/Age \n ( agemodelage )',ylab='Stratigraphic Height \n ( agemodelheight )',main='Age Model',lwd=4)
+```
+
+When the functions are used with `direction` in the setting `height to time`, `agemodelheight` corresponds to `xdep` and `agemodelage` corresponds to `ydep`. In this case, both `agemodelage` and `agemodelheight` need to be strictly increasing. Hiatuses can be inserted into the age model using the `hiatuslist` option.
+
+When `direction` is set to `time to height`, `agemodelage` corresponds to `xdep`and `agemodelheight` corresponds to `ydep`. Here, `agemodelheight` can also be decreasing or stagnating. This will be interpreted as erosion or periods of nondeposition, and accordingly incoorporated into the transformation.
+
+### Deposition Rates
+Deposition rates describe the sediment input into a system through time. They can be handed over either as piecewise linear deposition rate by setting `depositionmodel` to `piecewise linear deposition rate` or as binned deposition rate by setting `depositionmodel` to `binned deposition rate`.
+
+For piecewise linear deposition rates, the deposition rate is given by `depositionrate=approxfun(xdep,ydep)`. Accordingly `xdep` and `ydep` need to be of the same size.
+
+For binned deposition rates, the values of the deposition rate between `xdep[i]` and `xdep[i+1]` is given by `ydep[i]`. Accordingly `ydep` is one entry shorter than `xdep`
+
+When direction is set to `height to time`, deposition rates need to be strictly positive, since negative deposition rates (=erosion) would not be visible in the section. In this case, hiatuses can be inserted using the `hiatuslist` option.
+When direction is set to `time to height`, deposition rates can also be negative, which is interpreted as erosion and accordingly incorporated into the transformation.
+
+In the case of the transformation from height to time, the additional option `unit`is available. This is since deposition rates in the section can be described in two ways:
+
+1. Either they give a description of the deposition rates with which the heights in the section were deposited
+
+2. Or they describe how much time is "contained" in sediment.
+
+Setting `unit` to `sediment per time` and the functions will interpret the deposition rate described by `xdep` and `ydep` in the first way. Setting is to `time per sediment` will lead to the functions interpreting the deposition rates in the second way.
+
+NOTE: The default setting is `unit='sediment per time'`. For the effects of this options see the examples given in the help pages of `pointtransform` and `patterntransform`.
+
+
+
+
+## Isotope Ratios
+Isotope ratios need to be treated differently than patterns, because they are based on the ratio of two inputs into the sediment. Since numerator and denominator are condensed and diluted equally, ratios are not affected by sedimentary condensation/dilution. What changes is the location of the points where those ratios were measured. Equally spaced points in stratigraphic height will generate very irregular spaces between the points when deposition rates in the section vary drastically. 
+
+For these reasons, only the locations where isotope ratios were measured need to be transformed using `pointtransform`. The isotope ratios remain unchanged. For an example, see the help page of `pointtransform`.
 
 ## Examples
 For examples please refer to the help pages of the corresponding functions

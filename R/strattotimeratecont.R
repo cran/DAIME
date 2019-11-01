@@ -1,76 +1,21 @@
 strattotimeratecont <-
 function(xdep,ydep,xsig,ysig,pos=NULL,hiatuslist=list(),unit="sediment per time"){
-  #check input
-  {
-    stopifnot(is.list(hiatuslist),length(xsig)==length(ysig),length(xdep)==length(ydep),min(ysig)>=0,min(ydep)>0,is.unsorted(xsig,strictly=TRUE)==FALSE,is.unsorted(xdep,strictly=TRUE)==FALSE)
-    #check input format of hiatuses
-    if (length(hiatuslist)>0 ){
-      if ( any(sapply(hiatuslist,length)!=2) ){ #do all entries of the list have 2 components (1 for strat. height, 1 for duration?)
-        stop("Incompatible input format of hiatuses. Please check help page")
-      }
-      hiatheight=unlist(sapply(hiatuslist,function(x) head(x,1))) #get stratigraphic height of all hiatuses
-      if ( max(hiatheight)>=max(xdep)|min(hiatheight)<=min(xdep)) { #remove hiatuses that are defined outside the stratigraphic height
-        hiatuslist=hiatuslist[hiatheight<max(xdep)&hiatheight>min(xdep)]
-      }
+  xpat=xsig
+  ypat=ysig
+  stopifnot(is.list(hiatuslist),all(is.finite(xdep)),all(is.finite(ydep)),all(is.finite(xpat)),all(is.finite(ypat)),is.unsorted(xdep,strictly = TRUE)==FALSE,is.unsorted(xpat,strictly = TRUE)==FALSE,min(ypat)>=0,min(ydep)>0,length(xdep)>=2,any(is.null(pos),all(is.finite(pos))),length(xdep)==length(ydep),length(xpat)==length(ypat))
+  lims=c(max(min(xdep),min(xpat)),min(max(xdep),max(xpat))) #limits where both signal and deporate are defined
+  
+  if (length(hiatuslist)>0 ){
+    if ( any(sapply(hiatuslist,length)!=2,unlist(sapply(hiatuslist,function(x) tail(x,1)))<=0) ){ #do all entries of the list have 2 components (1 for strat. height, 1 for duration?)
+      stop("Incompatible input format of hiatuses. Please check help page")
     }
+    hiatheight=unlist(sapply(hiatuslist,function(x) head(x,1))) #get stratigraphic height of all hiatuses
+    #remove hiatuses that are defined outside the stratigraphic height
+    hiatuslist=hiatuslist[ hiatheight > lims[1]  &  hiatheight < lims[2] ]
   }
-  #preparing input data
-  {
-    lims=c(max(min(xdep),min(xsig)),min(max(xdep),max(xsig))) #limits where both signal and deporate are defined
-    if(is.null(pos)){ #default setting for pos: if no points for evaluation are given
-      pos=seq(from=lims[1],to=lims[2],length.out=min(1000,10*length(c(xdep,xsig))))
-    }
-    #remove points for which both the deposition rate and the signal are undefined
-    relevantpoints=(pos>=lims[1] & pos<=lims[2])
-    xt=pos[relevantpoints]
-    #adjust deposition rate dependent on input unit
-    if (unit=="sediment per time"){
-      ydep=ydep^(-1)
-    }
-    else if (unit=="time per sediment"){
-      ydep=ydep
-    }
-    else{
-      stop("Error: Incompatible unit (either \"sediment per time\" or \"time per sediment\")")
-    }
-    #determine all relevant x and y values of the deposiiton rate for later evaluation
-    xvals=sort(unique(c(xdep,xsig,xt)))
-    yvals=approx(xdep,ydep,xout=xvals,yleft=0,yright=0)[[2]]
+  if(any(unit=="sediment per time",unit=='time per sediment')==FALSE){
+    stop("Error: Incompatible unit (either \"sediment per time\" or \"time per sediment\")")
   }
-  #build age model by integrating over the inverse deposition rate using the trapezoidal rule
-  {
-    intvals = c(0,cumsum((0.5*(c(0,yvals )+c(yvals,0))*(c(xvals,0)-c(0,xvals)))[2:length(xvals)]))                             
-  }
-  #in case of hiatuses, modify age model
-  {
-    if (length(hiatuslist)>0 ){
-      hiatheight=unlist(sapply(hiatuslist,function(x) head(x,1))) #get stratigraphic height of all hiatuses
-      for (i in 1:length(hiatuslist)){ #insert hiatuses into age model
-        #get time at which the hiatus begins
-        jumpval=approx(xvals,intvals,xout=hiatheight[i],ties="ordered")[[2]] 
-        #split age model: one part below the hiatus to the beginning of the hiatus, one part from the end of the hiatus to the top. the second part is shifted by the duration of the hiatus
-        intvals=c(intvals[ xvals<hiatheight[i] ],jumpval,jumpval+hiatuslist[[i]][2],intvals[ xvals>hiatheight[i] ]+hiatuslist[[i]][2] ) 
-        #adjust x values to match the new age model
-        xvals=c(xvals[ xvals<hiatheight[i] ],hiatheight[i],hiatheight[i],xvals[ xvals>hiatheight[i]])
-      }
-    }
-  }
-  #transform stratigraphic rate into time
-  {
-    xtrans=approx(xvals,intvals,xout=xt,ties="ordered")[[2]] #transform stratigraphic heights into time 
-    ytrans=approx(xsig,ysig,xout=xt)[[2]]/approx(xdep,ydep,xout=xt)[[2]] #values of the temporal rate at the points in time
-    #remove values that are located right on a hiatus
-    if(length(hiatuslist)>0){
-      for(j in 1:length(hiatheight)){
-        xtrans[xt==hiatheight[j]]=NA
-        ytrans[xt==hiatheight[j]]=NA
-      }
-    }
-  }
-  #adjust output size to input size
-  {
-    xtrans=replace(rep(NA,length(relevantpoints)),relevantpoints,xtrans)
-    ytrans=replace(rep(NA,length(relevantpoints)),relevantpoints,ytrans)
-  }
-return(list(time=xtrans,val=ytrans))
+  ll=patterntransform(xdep,ydep,xpat,ypat,direction='height to time',depositionmodel='piecewise linear deposition rate',patternmode='piecewise linear',pos=pos,unit=unit,hiatuslist = hiatuslist)
+  return(ll)
 }
