@@ -16,5 +16,5 @@ function(x,binborder,depoval,hiatuslist=list(),unit="sediment per time"){
   usedhiatuslist=hiatuslist
   
   ll=pointtransform(points=x,xdep=binborder,ydep=depoval,direction='height to time',depositionmodel='binned deposition rate',hiatuslist=usedhiatuslist,unit=usedunit)
-  return(ll)
+  return(ll[which(names(ll)!="report")])
 }

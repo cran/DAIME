@@ -6,5 +6,5 @@ function(xdep,ydep,xsig,ysig,pos=NULL){
   
   ll=patterntransform(xdep,ydep,xpat,ypat,direction='time to height',depositionmodel='piecewise linear deposition rate',patternmode='piecewise linear',pos=pos)
 
-return(ll)
+return(ll[which(names(ll)!="report")])
 }

@@ -16,5 +16,5 @@ function(x,xdep,ydep,hiatuslist=list(),unit="sediment per time"){
   usedhiatuslist=hiatuslist
   
   ll=pointtransform(points=x,xdep=xdep,ydep=ydep,direction='height to time',depositionmodel='piecewise linear deposition rate',hiatuslist=usedhiatuslist,unit=usedunit)
-  return(ll)
+  return(ll[which(names(ll)!="report")])
 }

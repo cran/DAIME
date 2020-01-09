@@ -20,17 +20,17 @@ pos=NULL , hiatuslist=list() ,unit = 'time per sediment' )
 Vector of strictly increasing real numbers
 }
   \item{ydep}{
-Vector of real numbers. \code{xdep} and \code{ydep} describe the deposition model, and how they are interpreted depends on the option \code{depositionmodel} (and when \code{direction='height to time'}, also on the option \code{unit}). By default, \code{xdep} and \code{ydep} describe a piecewise linear deposition rate, i.e. \code{deporate=approxfun(xdep,ydep)}. For more options on how to describe deposition models, see the input \code{depositionmodel} below
+Vector of real numbers. \code{xdep} and \code{ydep} describe the deposition model, and how they are interpreted depends on the option \code{depositionmodel} (and when \code{direction='height to time'}, also on the option \code{unit}). By default, \code{xdep} and \code{ydep} describe a piecewise linear deposition rate, i.e. \code{deporate=approxfun(xdep,ydep)}. For more options on how to describe deposition models, see \code{depositionmodel} below
 }
 \item{xpat}{
-Vector containing strictly increasing real numbers
+Vector of strictly increasing real numbers
 }
 \item{ypat}{
 Vector containing positive real numbers. \code{xpat} and \code{ypat} describe the pattern to be transformed. By default, it is taken to be piecewise linear and is accordingly given by \code{pattern=approxfun(xpat,ypat)}. The option \code{patternmode} allows to change to binned patterns (see below). Whether the input pattern is a temporal or a stratigraphic pattern is determined by \code{direction}
 }
-  \item{direction}{OPTIONAL, default is \code{'time to height'}. Determines the direction of the transformation. Either \code{'time to height'} (in which case the input pattern described by \code{xpat} and \code{ypat} is interpreted as a temporal pattern and will be transformed into a stratigraphic pattern) or \code{'height to time'} (in which case the input pattern is described by \code{xpat} and \code{ypat} is interpreted as a stratigraphic pattern and will be transformed into a temporal pattern) 
+  \item{direction}{OPTIONAL, default is \code{'time to height'}. Determines the direction of the transformation. Either \code{'time to height'} (in which case the input pattern described by \code{xpat} and \code{ypat} is interpreted as a temporal pattern and will be transformed into a stratigraphic pattern) or \code{'height to time'} (in which case the input pattern described by \code{xpat} and \code{ypat} is interpreted as a stratigraphic pattern and will be transformed into a temporal pattern) 
 }
-  \item{depositionmodel}{OPTIONAL, default is \code{'piecewise linear deposition rate'}. Either \code{'piecewise linear deposition rate'}, \code{'binned deposition rate'}, or \code{'age model'}. Determines how the input of \code{xdep} and \code{ydep} is interpreted. Dependent on the choice of \code{direction} and \code{depositionmodel}, different restrictions on the input of \code{ydep} exist, for details and examples see the vignette (available via \code{vignette('DAIME')}
+  \item{depositionmodel}{OPTIONAL, default is \code{'piecewise linear deposition rate'}. Either \code{'piecewise linear deposition rate'}, \code{'binned deposition rate'}, or \code{'age model'}. Determines how the input of \code{xdep} and \code{ydep} is interpreted. Dependent on the choice of \code{direction} and \code{depositionmodel}, different restrictions on the input of \code{ydep} exist, for details and examples see the vignette (available via \code{vignette('DAIME') or the error messages}
 }
   \item{patternmode}{OPTIONAL, default is \code{'piecewise linear'}. Either \code{'piecewise linear'} or \code{'binned'}. Determines whether \code{xpat} and \code{ypat} are taken as a piecewise linear or a binned description of the pattern. In the first case, \code{length(xpat)} needs to match \code{length(ypat)}, and the pattern is given by \code{approxfun(xpat,ypat)}. In the second case, \code{length(xpat)} needs to match \code{length(ypat)+1}, and the value of the pattern between the \code{xpat[i]} and \code{xpat[i+1]} is given by \code{ypat[i]}
 }
@@ -48,10 +48,12 @@ OPTIONAL, default is 'sediment per time'. Only used when \code{direction='height
 Returns a list with two elements. If \code{direction='time to height'}, these elements are
 \item{height }{vector containing stratigraphic heights}
 \item{val }{vector containing the values of the stratigraphic pattern (=transformed temporal pattern) at the stratigraphic heights given by \code{height}}
+\item{report }{A short summary of the task performed}
 
 If \code{direction='height to time'}, these elements are
 \item{age }{vector containing points in time}
 \item{val }{vector containing the values of the temporal pattern (=transformed stratigraphic pattern) at the points in time given by \code{age}}
+\item{report }{A short summary of the task performed}
 
 Output of \code{NA} in \code{age}, \code{height}, or \code{val} indicates that some values coincide with a hiatus or intervals where the deposition rate is undefined.
 }
@@ -79,17 +81,19 @@ For an overview of the functions in the DAIME package, see its vignette (availab
 xdep=seq(0,12,length.out=100)
 ydep=splinefunH(x=c(0,2,4,6,8,10,12),y=c(1,5,6,1,0.5,1,6),m=c(0,1.5,-0.5,-0.5,0,0.5,0))(xdep)
 #Plot deposition rate
-plot(xdep,ydep,type='l',main='Deposition Rate',xlab='Time', ylab='Sediment per Time Unit') 
+plot(xdep,ydep,type='l',main='Deposition Rate',xlab='Time', ylab='Sediment per Time Unit',
+  ylim=c(0,max(ydep))) 
 ##define (piecewise linear) pattern, here fossil occurrences
 patternname='Fossil Occurrences'
 xpat= seq(from=min(xdep),to=max(xdep),length.out=100)
 ypat=splinefunH(x=c(0,4,12),y=c(0.5,2,0.5),m=c(0,0,0))(xpat) #function values of the signal
 plot(xpat,ypat,type='l',main=paste(patternname,'in time'),
-  xlab='Time',ylab=patternname)
+  xlab='Time',ylab=patternname,ylim=c(0,max(ypat)))
 
 ### Example 1: transform patterns from time into the section
 reslist=patterntransform(xdep,ydep,xpat,ypat,direction = 'time to height' , 
 depositionmodel = 'piecewise linear deposition rate' , patternmode = 'piecewise linear')
+reslist$report
 plot(reslist$height,reslist$val,type='l',xlab='Stratigraphic Height',
 ylab=patternname, main=paste(patternname,' in the section'))
 
@@ -100,6 +104,7 @@ plot(xdep,ydep,type='l',main='Deposition Rate',xlab='Time',ylab='Sediment per Ti
 lines(c(0,12),c(0,0))
 reslist=patterntransform(xdep,ydep,xpat,ypat,direction = 'time to height' , 
 depositionmodel = 'piecewise linear deposition rate' ,  patternmode = 'piecewise linear')
+reslist$report
 plot(reslist$height,reslist$val,type='l',xlab='Stratigraphic Height',
   ylab=patternname,main=paste(patternname,' in the section'),ylim=c(0,1))
 #the spike is because the deposition rate is very small when it transitions from 
@@ -110,34 +115,36 @@ plot(reslist$height,reslist$val,type='l',xlab='Stratigraphic Height',
 xpat= seq(from=min(xdep),to=max(xdep),length.out=100)
 ypat=splinefunH(x=c(0,4,12),y=c(0.5,2,0.5),m=c(0,0,0))(xpat) #function values of the signal
 plot(xpat,ypat,type='l',main=paste(patternname,'in the section'),
-  xlab='Stratigraphic Height',ylab=patternname)
+  xlab='Stratigraphic Height',ylab=patternname,ylim=c(0,max(ypat)))
 #piecewise linear deposition rate
 xdep=seq(0,12,length.out=100)
 ydep=splinefunH(x=c(0,2,4,6,8,10,12),y=c(1,5,6,1,0.5,1,6),m=c(0,1.5,-0.5,-0.5,0,0.5,0))(xdep)
 ##unit of the deposition rate
 usedunit='time per sediment'
 plot(xdep,ydep,type='l',main=paste('Deposition Rate as',usedunit),xlab='Stratigraphic Height',
-  ylab=usedunit)
+  ylab=usedunit,ylim=c(0,max(ydep)))
 
 ##transform
 reslist=patterntransform(xdep,ydep,xpat,ypat,direction = 'height to time' , 
 depositionmodel = 'piecewise linear deposition rate' , 
 patternmode = 'piecewise linear', unit=usedunit)
+reslist$report
 ##plot result
 plot(reslist$age,reslist$val,type='l',xlab='Time',
-  ylab=patternname,main=paste(patternname, 'in time'))
+  ylab=patternname,main=paste(patternname, 'in time'),ylim=c(0,max(reslist$val)))
   
 ##use different unit for transformation
 usedunit='sediment per time'
 plot(xdep,ydep,type='l',main=paste('Deposition Rate as',usedunit),
-xlab='Stratigraphic Height',ylab=usedunit)
+xlab='Stratigraphic Height',ylab=usedunit,ylim=c(0,max(ydep)))
 ##transform
 reslist=patterntransform(xdep,ydep,xpat,ypat,direction = 'height to time' ,
 depositionmodel = 'piecewise linear deposition rate' ,
 patternmode = 'piecewise linear', unit=usedunit)
+reslist$report
 ##plot result
 plot(reslist$age,reslist$val,type='l',xlab='Time',
-  ylab=patternname,main=paste(patternname, 'in time'))
+  ylab=patternname,main=paste(patternname, 'in time'),ylim=c(0,max(reslist$val)))
 #Note the big difference in the resulting patterns in time depending on the unit used.
 }
 

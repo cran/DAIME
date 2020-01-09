@@ -2,23 +2,24 @@
 \alias{patterntodepositionmodel}
 
 \title{
-Use sedimentary dilution/condensation of known patterns to create age models
+Use sedimentary dilution/condensation of known patterns to create age model
 }
 
 \description{
-Takes patterns (in stratigraphic height and/or time) to determine the deposition model that transforms them into each other. The deposition model is returned as an age model.
+Takes a pair of a stratigraphic and a temporal pattern to determine the deposition model that transforms them into each other. The deposition model is returned as an age model.
 }
 
 \usage{
 patterntodepositionmodel(xheight, yheight, 
     xage = NULL, yage = NULL,
-    heightmode = 'piecewise linear', agemode = 'piecewise linear')
+    heightmode = 'piecewise linear', agemode = 'piecewise linear',
+    atheight=NULL,atage=NULL)
 }
 
 \arguments{
 \item{xheight}{A vector of strictly increasing numbers
 }
-\item{yheight}{A vector of strictly positive numbers. \code{xheight} and \code{yheight} define the stratigraphic pattern. By default, it is assumed to be piecewise linear and is accordingly given by \code{approxfun(xheight,yheight)}. This can be changed using the option \code{heightmode} ( see below)
+\item{yheight}{A vector of strictly positive numbers. \code{xheight} and \code{yheight} define the stratigraphic pattern. By default, it is assumed to be piecewise linear and is accordingly given by \code{approxfun(xheight,yheight)}. This can be changed to a binned representation using the option \code{heightmode} (see below)
 }
 \item{xage}{OPTIONAL, default is \code{NULL}
 }
@@ -26,14 +27,20 @@ patterntodepositionmodel(xheight, yheight,
 }
 \item{heightmode}{OPTIONAL, default is \code{'piecewise linear'}. Either \code{'piecewise linear'} or \code{'binned'}. Determines whether \code{xheight} and \code{yheight} are taken as a piecewise linear or a binned description of the stratigraphic pattern. In the first case, \code{length(xheight)} needs to match \code{length(yheight)}, and the stratigraphic pattern is given by \code{approxfun(xheight,yheight)}. In the second case, \code{length(xheight)} needs to match \code{length(yheight)+1}, and the value of the stratigraphic pattern between the stratigraphic heights \code{xheight[i]} and \code{xheight[i+1]} is given by \code{yheight[i]}
 }
-\item{agemode}{OPTIONAL, default is \code{'piecewise linear'}. Either \code{'piecewise linear'} or \code{'binned'}. Determines whether \code{xage} and \code{yage} are taken as a piecewise linear or a binned description of the temporal pattern. In the first case, \code{length(xage)} needs to match \code{length(yage)}, and the temporal pattern is given by \code{approxfun(xage,yage)}. In the second case, \code{length(xage)} needs to match \code{length(yage)+1}, and the value of the temporal pattern between the ages \code{xage[i]} and \code{xage[i+1]} is given by \code{yage[i]}.}
+\item{agemode}{OPTIONAL, default is \code{'piecewise linear'}. Either \code{'piecewise linear'} or \code{'binned'}. Determines whether \code{xage} and \code{yage} are taken as a piecewise linear or a binned description of the temporal pattern. In the first case, \code{length(xage)} needs to match \code{length(yage)}, and the temporal pattern is given by \code{approxfun(xage,yage)}. In the second case, \code{length(xage)} needs to match \code{length(yage)+1}, and the value of the temporal pattern between the ages \code{xage[i]} and \code{xage[i+1]} is given by \code{yage[i]}
+}
+\item{atheight}{OPTIONAL, default is \code{NULL}. Stratigraphic heights that should be included in the age model. By default, the function chooses those heights automatically
+}
+\item{atage}{OPTIONAL, default is \code{NULL}. Ages that should be included in the age model. By default, the function chooses those ages automatically
+}
 }
 
 \value{
 A list containing the following entries:
 \item{age }{Vector of ages}
 \item{height }{Vector of stratigraphic heights}
-They form the age model in the sense that the age at which \code{height[i]} was deposited is given by \code{age[i]}. Conversely at the time \code{age[i]}, \code{height[i]} was deposited.
+\item{report }{A short summary of the task performed}
+\code{age} and \code{height} form the age model in the sense that the age at which \code{height[i]} was deposited is given by \code{age[i]}. Conversely at the time \code{age[i]}, \code{height[i]} was deposited
 }
 
 \references{
@@ -47,7 +54,7 @@ Niklas Hohmann
 \seealso{
 \code{\link{pointtransform}} for the transformations of points using age models
 
-\code{\link{patterntransform}} for the transformations of patterns (such as input rates into the sediment) using age models
+\code{\link{patterntransform}} for the transformations of temporal and stratigraphic patterns (such as input rates into the sediment) using age models
 
 For an overview of the functions in the DAIME package, see its vignette (available via \code{vignette('DAIME')} )
 }
@@ -62,6 +69,7 @@ plot(xheight,yheight,xlab='Stratigraphic Height',ylab='Pollen Abundance',type='l
   ylim=c(0,max(yheight)),main='Stratigraphic Pattern')
 #reconstruct deposition model based on the assumption of constant pollen input in time
 resultlist=patterntodepositionmodel(xheight,yheight)
+resultlist$report
 plot(resultlist$age,resultlist$height,xlab='Age',ylab='Stratigraphic Height',type='l',
   lwd=6,main='Reconstructed Deposition Models as Age Model')
 legend('topleft',legend='Age Model',lwd=6,col='black')
@@ -78,6 +86,7 @@ plot(xage,yage,type='l',xlab='Time',ylab='Pollen Input',ylim=c(0,max(yage)),
   lwd=6,main='Temporal Pattern')
 #reconstruct age model based on these updated assumptions
 resultlist=patterntodepositionmodel(xheight,yheight,xage,yage)
+resultlist$report
 plot(resultlist$age,resultlist$height,xlab='Age',ylab='Stratigraphic Height',type='l',lwd=6, 
   main='Reconstructed Deposition Model as Age Model')
 legend('topleft',legend='Age Model',lwd=6,col='black')
@@ -93,6 +102,7 @@ barplot(yheight,width=diff(xheight),ylab='Pollen Abundance',xlab='Stratigraphic 
 #Note that pollen input in time is again assumed to be constant 
 #(default setting if no xage and yage given)
 resultlist=patterntodepositionmodel(xheight,yheight,heightmode='binned')
+resultlist$report
 plot(resultlist$age,resultlist$height,xlab='Age',ylab='Stratigraphic Height',type='l',lwd=6,
   main='Reconstructed Deposition Model as Age Model')
 legend('topleft',legend='Age Model',lwd=6,col='black')
