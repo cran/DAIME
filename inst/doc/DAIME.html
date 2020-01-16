@@ -201,22 +201,22 @@ hr {
 </head>
 
 <body>
-<p>This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions and some explantions regarding their options.</p>
+<p>This document provides a brief introduction into the structure of the R package DAIME with an overview of the available functions and some explanations regarding their options.</p>
 
 <h2>Introduction</h2>
 
-<p>Changing deposition rates determine how much time it takes to deposit a given thickness of sediment. This determines how diluted or condensed the information contained in this sediment is, and accordingly alters our perception of time and speed when working with the rock record.</p>
+<p>Changing deposition rates determine how much time it takes to deposit a given thickness of sediment. This determines how diluted or condensed the information contained in this sediment is, and accordingly alters the perception of time and speed when working with the rock record.</p>
 
 <p>The DAIME package allows to</p>
 
 <ol>
-<li><p>model how changing deposition rates alter the expression of temporal patterns in sections</p></li>
-<li><p>account for the effects of changing deposition rates in data derived from the rock record</p></li>
+<li><p>Model how changing deposition rates and hiatuses alter the stratigraphic expression of temporal patterns</p></li>
+<li><p>Express data derived from the sedimentary rock record in terms of time</p></li>
 </ol>
 
 <h2>Available Functions</h2>
 
-<p>The 2.0 version of the package contains the following core functions:</p>
+<p>The 2.11 version of the package contains the following core functions:</p>
 
 <ol>
 <li><p><code>pointtransform</code> to transform the location of individual points from time into stratigraphic height and vice versa. This can also be used to create age models from deposition rates and transform isotope ratios between time and height</p></li>
@@ -236,22 +236,74 @@ hr {
 <li><p><code>strattotimeratebin</code>, <code>strattotimeratecont</code>, <code>timetostratratebin</code>, and <code>timetostratratecont</code> as wrappers of <code>patterntransform</code></p></li>
 </ul>
 
-<h2>Nomenclature</h2>
+<h2>Transformable Data</h2>
+
+<h3>Points</h3>
+
+<p>Data consisting of individual points can be transformed via the function <code>pointtransform</code>. These points can be</p>
 
 <ul>
-<li>Patterns can be a rate of anything that is deposited with the sediment like a grain and all information derived from these grains. This can be rate of fossil occurrences, first/last fossil occurrences, et. in general, patterns reflect (input/output) rates of/to the sediment. Patterns need to be positive (but not strictly).</li>
-<li>Points can be the time/stratigraphic height of any object that is deposited in the sediment as a type of grain. This can for example be a shell/fossil.</li>
+<li><p>Locations of samples or arbitrary objects found in the sediment (will be transformed into their time of deposition)</p></li>
+<li><p>Time of deposition of any object contained in the sediment (will be transformed into the stratigraphic height where it can be found).</p></li>
 </ul>
+
+<h4>Samples associated with measurements</h4>
+
+<p>Samples are often associated with measurements performed on this sample (e.g. Hg content measured on a bivalve). For such samples, only their location needs to be transformed via the DAIME model, the measured values remain unchanged and associated with the sample.</p>
+
+<h4>Isotope Ratios, Ratios in General and Percentages</h4>
+
+<p>In (isotope) ratios, percentages, and ratios in general, values of the numerator and denominator are condensed and diluted equally. This cancels out the effects of sedimentary condensation/dilution on the value (ordinate). However the locations where these values were measured (abscissa) are still affected by condensation/dilution.
+To account for this, the locations where the ratios were determined need to be transformed via <code>pointtransform</code> whilst keeping the values associated with these locations unchanged. For an example, see the help page of <code>pointtransform</code>.</p>
+
+<h3>Patterns (Rates)</h3>
+
+<p>Patterns can be transformed using the function <code>patterntransform</code>. Patterns can be taken as synonymous with rates, and can be subdivided into</p>
+
+<ul>
+<li><p>Temporal rates: Any input into the sediment per time unit</p></li>
+<li><p>Stratigraphic rates: Any content in the sediment per stratigraphic height</p></li>
+</ul>
+
+<p>This can for example be</p>
+
+<ul>
+<li><p>Fossil rates (e.g. fossil found per meter or shells deposited per year)</p></li>
+<li><p>First / last fossil occurrences (but see below)</p></li>
+<li><p>Rates of proxies (e.g. Th content per meter/ Th input per time unit)</p></li>
+</ul>
+
+<p>but also information derived from these rates such as</p>
+
+<ul>
+<li>Rates of morphological evolution (derived from fossils)</li>
+</ul>
+
+<h4>First and Last fossil occurrences</h4>
+
+<p>First and last occurrences are defined post hoc in the section. Due to this they cannot be transformed as a pattern when Hiatuses are present (with no hiatuses around, they can be transformed as any other pattern).</p>
+
+<p>In the presence of hiatuses, simulation approaches or estimates to bracket their position should be used.</p>
+
+<h3>Relation between points and patterns</h3>
+
+<p>The relation between patterns and points is similar to the relation between a distribution and a sample. One is the abstract description (pattern) while one is the realization (point)</p>
 
 <h2>Deposition models</h2>
 
-<p>Deposition models are central to the DAIME package and describe how sediment input into the system changes through time. There are three ways to hand a deposition model over to the functions <code>pointtransform</code> and <code>patterntransform</code>: as age model, as piecewise linear deposition rate, and as binned deposition rate. This is determined by the <code>depositionmodel</code> option in <code>pointtransform</code> and <code>patterntransform</code>.</p>
+<p>Deposition models are central to the DAIME package and describe how sediment input into the system changes through time. There are three ways to hand a deposition model over to the functions <code>pointtransform</code> and <code>patterntransform</code>:</p>
 
-<p>The function <code>patterntodepositionmodel</code> can be used to create a deposition model based on the dilution/condensation of a known pattern which can then be handed over to <code>pointtransform</code> or <code>patterntransform</code>.</p>
+<ul>
+<li><p>as age model</p></li>
+<li><p>as piecewise linear deposition rate</p></li>
+<li><p>as binned deposition rate.</p></li>
+</ul>
+
+<p>By default, the deposition model is assumed to be a piecewise linear deposition rate. This can be adjusted using the <code>depositionmodel</code> option.</p>
 
 <h3>Age models</h3>
 
-<p>Age models assign a stratigraphic height to an age and vice versa. They are described via two vectors I will here call <code>agemodelage</code> and <code>agemodelheight</code>. The entry <code>agemodelage[i]</code> is the age of the sediment at the stratigraphic height <code>agemodelheight[i]</code> and vice versa.</p>
+<p>Age models assign (1) a stratigraphic height its time of deposition and (equivalently) an age the stratigraphic height that was deposited at said age. Age models are described by two vectors of equal length, here named <code>agemodelage</code> and <code>agemodelheight</code>. The entry <code>agemodelage[i]</code> is the age of the sediment at the stratigraphic height <code>agemodelheight[i]</code> and vice versa.</p>
 
 <pre><code class="r">
 par(mar=c(4,4,1,0),mgp=c(2.1,0.4,0))
@@ -262,37 +314,48 @@ plot(agemodelage,agemodelheight,type=&#39;l&#39;,xlab=&#39;Time/Age \n ( agemode
 
 <p><img src="data:image/png;base64,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" alt="plot of chunk fig1"/></p>
 
-<p>When the functions are used with <code>direction</code> in the setting <code>height to time</code>, <code>agemodelheight</code> corresponds to <code>xdep</code> and <code>agemodelage</code> corresponds to <code>ydep</code>. In this case, both <code>agemodelage</code> and <code>agemodelheight</code> need to be strictly increasing. Hiatuses can be inserted into the age model using the <code>hiatuslist</code> option.</p>
+<p>WHen the transformation is from height to time, i.e. the functions are used with <code>direction</code> in the setting <code>height to time</code>, <code>agemodelheight</code> corresponds to <code>xdep</code> and <code>agemodelage</code> corresponds to <code>ydep</code>.</p>
 
-<p>When <code>direction</code> is set to <code>time to height</code>, <code>agemodelage</code> corresponds to <code>xdep</code>and <code>agemodelheight</code> corresponds to <code>ydep</code>. Here, <code>agemodelheight</code> can also be decreasing or stagnating. This will be interpreted as erosion or periods of nondeposition, and accordingly incoorporated into the transformation.</p>
+<p>When <code>direction</code> is set to <code>time to height</code>, <code>agemodelage</code> corresponds to <code>xdep</code>and <code>agemodelheight</code> corresponds to <code>ydep</code>. </p>
 
 <h3>Deposition Rates</h3>
 
 <p>Deposition rates describe the sediment input into a system through time. They can be handed over either as piecewise linear deposition rate by setting <code>depositionmodel</code> to <code>piecewise linear deposition rate</code> or as binned deposition rate by setting <code>depositionmodel</code> to <code>binned deposition rate</code>.</p>
 
+<h4>Piecewise linear deposition rates</h4>
+
 <p>For piecewise linear deposition rates, the deposition rate is given by <code>depositionrate=approxfun(xdep,ydep)</code>. Accordingly <code>xdep</code> and <code>ydep</code> need to be of the same size.</p>
+
+<h4>Binned depositon rates</h4>
 
 <p>For binned deposition rates, the values of the deposition rate between <code>xdep[i]</code> and <code>xdep[i+1]</code> is given by <code>ydep[i]</code>. Accordingly <code>ydep</code> is one entry shorter than <code>xdep</code></p>
 
-<p>When direction is set to <code>height to time</code>, deposition rates need to be strictly positive, since negative deposition rates (=erosion) would not be visible in the section. In this case, hiatuses can be inserted using the <code>hiatuslist</code> option.
-When direction is set to <code>time to height</code>, deposition rates can also be negative, which is interpreted as erosion and accordingly incorporated into the transformation.</p>
+<h4>Inverse deposition rates and units</h4>
 
-<p>In the case of the transformation from height to time, the additional option <code>unit</code>is available. This is since deposition rates in the section can be described in two ways:</p>
+<p>For the transformation from height to time, the additional option <code>unit</code>is available. This is since deposition rates in the section can be described in two ways:</p>
 
 <ol>
 <li><p>Either they give a description of the deposition rates with which the heights in the section were deposited</p></li>
-<li><p>Or they describe how much time is &ldquo;contained&rdquo; in sediment.</p></li>
+<li><p>Or they describe how much time is &ldquo;contained&rdquo; in sediment (&ldquo;inverse&rdquo; deposition rate).</p></li>
 </ol>
 
 <p>Setting <code>unit</code> to <code>sediment per time</code> and the functions will interpret the deposition rate described by <code>xdep</code> and <code>ydep</code> in the first way. Setting is to <code>time per sediment</code> will lead to the functions interpreting the deposition rates in the second way.</p>
 
-<p>NOTE: The default setting is <code>unit=&#39;sediment per time&#39;</code>. For the effects of this options see the examples given in the help pages of <code>pointtransform</code> and <code>patterntransform</code>.</p>
+<p>The default setting is <code>unit=&#39;sediment per time&#39;</code>. For the effects of this options see the examples given in the help pages of <code>pointtransform</code> and <code>patterntransform</code>.</p>
 
-<h2>Isotope Ratios</h2>
+<h3>Creating age models from the condensation/dilution of patterns</h3>
 
-<p>Isotope ratios need to be treated differently than patterns, because they are based on the ratio of two inputs into the sediment. Since numerator and denominator are condensed and diluted equally, ratios are not affected by sedimentary condensation/dilution. What changes is the location of the points where those ratios were measured. Equally spaced points in stratigraphic height will generate very irregular spaces between the points when deposition rates in the section vary drastically. </p>
+<p>The function <code>patterntodepositionmodel</code> creates an age model that condenses/dilutes a given temporal pattern into a given stratigraphic pattern and vice versa. For examples see its help page.</p>
 
-<p>For these reasons, only the locations where isotope ratios were measured need to be transformed using <code>pointtransform</code>. The isotope ratios remain unchanged. For an example, see the help page of <code>pointtransform</code>.</p>
+<h3>Hiatuses, Erosion, and Nondeposition</h3>
+
+<p>The handling of hiatuses, erosion, and nondeposition depends on the direction of transformation.</p>
+
+<p>For the transformation from section to time, i.e. using the option <code>direction=&quot;height to time&quot;</code>, hiatuses can be inserted at any stratigraphic height using the <code>hiatuslist</code> option. For details see the corresponding help pages.</p>
+
+<p>For the transformation from time to the section, i.e. using the option <code>direction=&quot;time to height&quot;</code>, hiatuses, erosion, and nondeposition can be modeled via deposition rates that are zero (nondeposition) or negative (erosion) or as time intervals where the age model is decreasing.</p>
+
+<p>Hiatuses are destructive in this implementation of the DAIME model. Anything being deposited right at a hiatus or during an interval of nondeposition or erosion will be destroyed by the transformation.</p>
 
 <h2>Examples</h2>
 

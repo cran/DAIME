@@ -1,4 +1,4 @@
-b2392699fbbf0c3bcb99cf004991f162 *DESCRIPTION
+fa2ec1adacb2c0c5d0036b90f8dd6267 *DESCRIPTION
 1fde4056a095bca81eca627db98f0521 *NAMESPACE
 da590f1203d81b777942f594408c06fe *R/patterntodepositionmodel.R
 015babdc3db0ddb135e0b53d8b2958c3 *R/patterntransform.R
@@ -11,11 +11,11 @@ b76c3f4ac8dfe8b2114701b82b1d0ac3 *R/strattotimepointcont.R
 d2a00d2fd44ffcb13bff7e8ac2f7f5a8 *R/timetostratpointcont.R
 0190b54a12d234f4bb583d7f1b6256b0 *R/timetostratratebin.R
 365fa6bfa83f7014849dd8d8f74463ed *R/timetostratratecont.R
-e1e05b21f77c8c0045b8ac42256c34ec *build/partial.rdb
+40ad06313b52603d299c742171b52125 *build/partial.rdb
 a219f8312c36ab4e26ff62db104e17b6 *build/vignette.rds
 12837badc66c0c9b7ce44955858a96e0 *inst/doc/DAIME.R
-b719f869d85764f85e0d7b5ec591af7e *inst/doc/DAIME.Rmd
-7e2940ecd48371958b465561e92f266f *inst/doc/DAIME.html
+fc14810b191568f00835d6814402d692 *inst/doc/DAIME.Rmd
+be73c1a78ed6e45a3c66023063e444ab *inst/doc/DAIME.html
 853a5e0f4c3ba3966828a15f1ff25036 *man/DAIME-package.Rd
 b5e1873132f65f6c9fd343bcc64798db *man/patterntodepositionmodel.Rd
 da315f21fb7d69cefdcc2f59544ad42b *man/patterntransform.Rd
@@ -28,4 +28,4 @@ ed6f1299bc126bc3386093fd521dba26 *man/timetostratpointbin.Rd
 65c7cb60bb392b8d3f72746ce80c672c *man/timetostratpointcont.Rd
 0c905a3d51e9fa43ef5bacd1d736f900 *man/timetostratratebin.Rd
 8dca8ac52d6e2fa7a1202f732ab56656 *man/timetostratratecont.Rd
-b719f869d85764f85e0d7b5ec591af7e *vignettes/DAIME.Rmd
+fc14810b191568f00835d6814402d692 *vignettes/DAIME.Rmd
