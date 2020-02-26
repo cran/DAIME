@@ -7,6 +7,7 @@ Transform patterns from Stratigraphic Height into Time (Binned)
 
 \description{
 This function transforms a given binned stratigraphic pattern into the corresponding temporal pattern. The transformation is based on the age model derived from the given deposition rate. Essentially a wrapper of \code{patterntransform(...,direction='height to time',depositionmodel='binned deposition rate',patternmode='binned')} kept for backwards compatibility of the package.
+It is recommended to use \code{patterntransform} instead of this function.
 }
 
 \usage{

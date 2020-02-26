@@ -1,9 +1,17 @@
-patterntodepositionmodel=function(xheight,yheight,xage=NULL,yage=NULL,heightmode='piecewise linear',agemode='piecewise linear',atheight=NULL,atage=NULL){
+patterntodepositionmodel=function(xheight,yheight,xage=NULL,yage=NULL,heightmode='piecewise linear',agemode='piecewise linear',atheight=NULL,atage=NULL,rescalefor=1,timetype='time'){
   #### Check input and set default settings ####
   #initialize default settings for xage and yage: constant rate of 1 over the unit interval
   defaultage=FALSE
+  if (timetype!='time' & timetype!='age'){
+    stop("timetype needs to be either \"time\" or \"age\" ")
+  }
   if (all(is.null(xage),is.null(yage))){
-    xage=c(0,1)
+    if(timetype=='time'){
+      xage=c(0,1)
+    }
+    if (timetype=='age'){
+      xage=c(1,0)
+    }
     yage=c(1,1)
     agemode='piecewise linear'
     defaultage=TRUE
@@ -11,6 +19,9 @@ patterntodepositionmodel=function(xheight,yheight,xage=NULL,yage=NULL,heightmode
   ##catch input errors##
   if (xor(is.null(xage),is.null(yage))){ 
     stop("Either (1) enter input for both \"xage\" and \"yage\" to define temporal pattern or (2) skip input for both of them to use the default setting of a constant temporal pattern.")
+  }
+  if (timetype=='age'){
+    xage=-xage
   }
   #check input: strictly positive values for both patterns, defined on strictly increasing x-values/binborders
   if(!all(is.finite(c(xage,yage,xheight,yheight)))){
@@ -70,9 +81,7 @@ patterntodepositionmodel=function(xheight,yheight,xage=NULL,yage=NULL,heightmode
   else{
     stop("Incompatible mode for the stratigraphic pattern: set heightmode to either \"piecewise linear\" or \"binned\". ")
   }
-  #rescale the rates to have a input volume of 1
-  yheight=yheight/max(intvals.height)
-  intvals.height=intvals.height/max(intvals.height)
+
   
   #### check and prepare inputs for the temporal pattern ####
   agevals=unique(sort(c(xage,relages)))
@@ -95,9 +104,25 @@ patterntodepositionmodel=function(xheight,yheight,xage=NULL,yage=NULL,heightmode
   else{
     stop("Incompatible mode for the temporal pattern: Set agemode to either \"piecewise linear\" or \"binned\". ")
   }
-  #rescale the rates to have a input volume of 1
-  yage=yage/max(intvals.age)
-  intvals.age=intvals.age/max(intvals.age)
+
+  
+  ####rescale temporal and stratigraphic rates ####
+  if (rescalefor=='temporal pattern'){
+    rescaleby=max(intvals.height)
+  }
+  else if (rescalefor=='stratigraphic pattern'){
+    rescaleby=max(intvals.height)
+  }
+  else{
+    if(any(!is.numeric(rescalefor),is.infinite(rescalefor),rescalefor<=0)){
+      stop("Please use either a strictly positive numeric value or \"temporal pattern\" or \"stratigraphic pattern\" for the input option \"rescalefor\"")
+    }
+    rescaleby=rescalefor
+  }
+  yage=rescaleby*yage/max(intvals.age)
+  intvals.age=rescaleby*intvals.age/max(intvals.age)
+  yheight=rescaleby*yheight/max(intvals.height)
+  intvals.height=rescaleby*intvals.height/max(intvals.height)
   
   #### Define Auxiliary Function ####
   #subroutine invint: determine preimage of values under given a piecewise quadratic function
@@ -144,11 +169,39 @@ patterntodepositionmodel=function(xheight,yheight,xage=NULL,yage=NULL,heightmode
   xheight.end=sort(c(xheight,xadd.height))
   xage.end=sort(c(xage,xadd.age))
   keepme=(!duplicated(xheight.end)) & (!duplicated(xage.end))
+  age=xage.end[keepme]
+  height=xheight.end[keepme]
+  
+  if (is.null(atheight) & is.null(atage)){
+    if(!is.null(xage)){
+      age2=approx(height,age,xout=height,yright=max(age),yleft=min(age))
+      height2=approx(age,height,xout=age,yright=max(height),yleft=min(height))
+      ageout=sort(c(age2$y,height2$x))
+      heightout=sort(c(age2$x,height2$y))
+    }
+    else{
+      heightout=xheight
+      ageout=approx(height,age,xout=height,yright=max(age),yleft=min(age))$y
+    }
+  }
+else{
+  age2=approx(height,age,xout=atheight,yright=max(age),yleft=min(age))
+  height2=approx(age,height,xout=atage,yright=max(height),yleft=min(height))
+  ageout=sort(c(age2$y,height2$x))
+  heightout=sort(c(age2$x,height2$y))
+}
   #### Write summary ####
   summarysentence=paste("Generated age model based on the dilution/condensation of a",agemode,"temporal pattern relative to a",heightmode,"stratigraphic pattern.")
   if(defaultage){
     summarysentence=paste(summarysentence,"Using the default option of a temporal pattern that is constant for a duration of one time unit.")
   }
   #### Output ####
-  return(list(age=xage.end[keepme],height=xheight.end[keepme],report=summarysentence))
+  keepme=(!duplicated(heightout)) & (!duplicated(ageout))
+  if(timetype=='time'){
+    outlist=list(time=ageout[keepme],height=heightout[keepme],report=paste(summarysentence, "Results given in time."))
+  }
+  if(timetype=='age'){
+    outlist=list(age=ageout[keepme],height=heightout[keepme],report=paste(summarysentence, "Results given in age."))
+  }
+  return(outlist)
 }

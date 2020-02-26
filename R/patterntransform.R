@@ -1,11 +1,25 @@
-patterntransform=function(xdep,ydep,xpat,ypat,direction='time to height',depositionmodel='piecewise linear deposition rate',patternmode='piecewise linear',pos=NULL,hiatuslist=list(),unit='time per sediment'){
+patterntransform=function(xdep,ydep,xpat,ypat,direction='time to height',depositionmodel='piecewise linear deposition rate',patternmode='piecewise linear',pos=NULL,hiatuslist=list(),unit='time per sediment',timetype='time'){
   #### Check input: finite, length xdep/xpat, increasing, define/check pos ####
   if(!all(is.finite(c(xpat,ypat,ydep,xdep)))){
-    stop("Values in xpat, ypat, xdep, and ydep must be finite")
+    stop("Values in xpat, ypat, xdep, and ydep need to be finite")
   }
   if (length(xdep)<2 | length(xpat)<2){
-    stop("Degenerate input: both xdep and xpat must contain at least two elements")
+    stop("Degenerate input: both xdep and xpat need to contain at least two elements")
   }
+  
+  if (timetype!='time' & timetype!='age'){
+    stop("timetype needs to be either \"time\" or \"age\" ")
+  }
+  if (timetype=='age'){
+    if(direction=='time to height'){
+      xpat=-xpat
+      xdep=-xdep
+    }
+    if(direction=="height to time"&depositionmodel=='age model'){
+      ydep=-ydep
+    }
+  }
+  
   if(any(c(diff(xdep),diff(xpat))<=0)){
     stop("Need strictly increasing vectors for xdep and xpat")
   }
@@ -75,12 +89,12 @@ patterntransform=function(xdep,ydep,xpat,ypat,direction='time to height',deposit
     stop("Incompatible mode for input of patterns. Set patternmode to either \"piecewise linear\" or \"binned\" )")
   }
   if(any(ypat<0)){
-    stop("patterns must to be positive, need ypat>=0")
+    stop("Patterns need to be positive, so ypat>=0 is required")
   }
   #### Check Hiatuslist ####
   if(direction=='height to time'){
     if(!is.list(hiatuslist)){
-      stop("hiatuslist must be a list")
+      stop("hiatuslist should be a list")
     }
     if (length(hiatuslist)>0 ){
       if ( any(sapply(hiatuslist,length)!=2) ){ #do all entries of the list have 2 components (1 for strat. height, 1 for duration?)
@@ -90,7 +104,7 @@ patterntransform=function(xdep,ydep,xpat,ypat,direction='time to height',deposit
         stop("Non-finite entries in hiatuslist")
       }
       if(any(unlist(sapply(hiatuslist,function(x) tail(x,1)))<=0)){
-        stop("Second entries of the vectors in hiatuslist must be strictly positive, since hiatuses of negative duration make no sense!")
+        stop("Second entries of the vectors in hiatuslist need to be strictly positive, since hiatuses of negative duration make no sense!")
       }
       hiatheight=unlist(sapply(hiatuslist,function(x) head(x,1))) #get stratigraphic height of all hiatuses
       hiatdur=unlist(sapply(hiatuslist,function(x) tail(x,1)))
@@ -253,10 +267,26 @@ patterntransform=function(xdep,ydep,xpat,ypat,direction='time to height',deposit
   
   #### Output ####
   if(direction=='time to height'){
-    outlist=list(height=xtrans,val=ytrans,report=summarysentence)
+    if (timetype=='time'){
+      outlist=list(height=xtrans,val=ytrans,report=paste(summarysentence,"Interpreted input as time"))
+    }
+    if (timetype=='age'){
+      outlist=list(height=xtrans,val=ytrans,report=paste(summarysentence,"Interpreted input as age"))
+    }
   }
   else if(direction=='height to time'){
-    outlist=list(age=xtrans,val=ytrans,report=summarysentence)
+    if (timetype=='age'){
+      if (depositionmodel=='age model'){
+        outlist=list(age=-xtrans,val=ytrans,report=paste(summarysentence, "Results given in age."))
+      }
+      else{
+        outlist=list(age=-(xtrans-max(intvals)),val=ytrans,report=paste(summarysentence, "Results given in age."))
+      }
+      
+    }
+    if (timetype=='time'){
+      outlist=list(time=xtrans,val=ytrans,report=paste(summarysentence, "Results given in time."))
+    }
   }
   return(outlist)
 }

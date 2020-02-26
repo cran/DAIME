@@ -6,7 +6,7 @@ Transform Patterns from Stratigraphic Height into Time (Continuous)
 }
 
 \description{
-This function transforms a given continuous stratigraphic pattern into the corresponding temporal pattern. The transformation is based on the age model derived from the given deposition rate. Essentially a wrapper of \code{patterntransform(...,direction='height to time',depositionmodel='piecewise linear deposition rate',patternmode='piecewise linear')} kept for backwards compatibility of the package.
+This function transforms a given continuous stratigraphic pattern into the corresponding temporal pattern. The transformation is based on the age model derived from the given deposition rate. Essentially a wrapper of \code{patterntransform(...,direction='height to time',depositionmodel='piecewise linear deposition rate',patternmode='piecewise linear')} kept for backwards compatibility of the package. It is recommended to use \code{patterntransform} instead of this function.
 }
 
 \usage{

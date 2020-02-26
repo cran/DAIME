@@ -1,10 +1,22 @@
-pointtransform=function(points,xdep,ydep,direction='time to height',depositionmodel='piecewise linear deposition rate',hiatuslist=list(),unit='time per sediment'){
+pointtransform=function(points,xdep,ydep,direction='time to height',depositionmodel='piecewise linear deposition rate',hiatuslist=list(),unit='time per sediment',timetype='time'){
   #### Rough input check: is.finiteness, is.ordered, and length####
     if(!all(is.finite(c(points,ydep,xdep)))){
-      stop("Values in points, xdep, and ydep must be finite")
+      stop("Values in points, xdep, and ydep need to be finite")
     }
     if (length(xdep)<2){
-      stop("Degenerate input: xdep must contain at least two elements")
+      stop("Degenerate input: xdep needs to contain at least two elements")
+    }
+    if (timetype!='time' & timetype!='age'){
+      stop("timetype needs to be either \"time\" or \"age\" ")
+    }
+    if (timetype=='age'){
+      if(direction=='time to height'){
+        points=-points
+        xdep=-xdep
+      }
+      if(direction=="height to time"&depositionmodel=='age model'){
+        ydep=-ydep
+      }
     }
     if(any(diff(xdep)<=0)){
       stop("Need strictly increasing vector for xdep")
@@ -58,7 +70,7 @@ pointtransform=function(points,xdep,ydep,direction='time to height',depositionmo
   #### Check Hiatuslist ####
   if(direction=='height to time'){
     if(!is.list(hiatuslist)){
-      stop("hiatuslist must be a list")
+      stop("hiatuslist needs be a list")
     }
     if (length(hiatuslist)>0 ){
       if ( any(sapply(hiatuslist,length)!=2) ){ #do all entries of the list have 2 components (1 for strat. height, 1 for duration?)
@@ -68,7 +80,7 @@ pointtransform=function(points,xdep,ydep,direction='time to height',depositionmo
         stop("Non-finite entries in hiatuslist")
       }
       if(any(unlist(sapply(hiatuslist,function(x) tail(x,1)))<=0)){
-        stop("Second entries of the vectors in hiatuslist must be strictly positive, since hiatuses of negative duration make no sense!")
+        stop("Second entries of the vectors in hiatuslist need to be strictly positive, since hiatuses of negative duration make no sense!")
       }
       hiatheight=unlist(sapply(hiatuslist,function(x) head(x,1))) #get stratigraphic height of all hiatuses
       hiatdur=unlist(sapply(hiatuslist,function(x) tail(x,1)))
@@ -216,5 +228,12 @@ pointtransform=function(points,xdep,ydep,direction='time to height',depositionmo
     }
   }
   #### Output ####
-  return(list(age=age,height=height,report=summarysentence))
+  if (timetype=='age'){
+    outlist=list(age=-age,height=height,report=paste(summarysentence, "Results given in age."))
+  }
+  if (timetype=='time'){
+    outlist=list(time=age,height=height,report=paste(summarysentence, "Results given in time."))
+  }
+    
+  return(outlist)
 }

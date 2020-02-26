@@ -18,5 +18,6 @@ function(binborder,depoval,signalval,pos=NULL,hiatuslist=list(),unit="sediment p
     stop("Error: Incompatible unit (either \"sediment per time\" or \"time per sediment\")")
   }
   ll=patterntransform(xdep,ydep,xpat,ypat,direction='height to time',depositionmodel='binned deposition rate',patternmode='binned',pos=pos,unit=unit,hiatuslist = hiatuslist)
-  return(ll[which(names(ll)!="report")])
+  outlist=list(age=ll$time,val=ll$val)
+  return(outlist)
 }

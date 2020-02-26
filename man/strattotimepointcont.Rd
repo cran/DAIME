@@ -5,7 +5,7 @@
 Transform Points and Isotope Ratios from Stratigraphic Height into Time (Continuos)
 }
 \description{
-This function takes a continuous deposition rate and reconstructs at what time a given stratigraphic height was deposited. Essentially a wrapper of \code{pointtransform(...,direction='height to time',depositionmodel='piecewise linear deposition rate')} kept for backwards compatibility of the package.
+This function takes a continuous deposition rate and reconstructs at what time a given stratigraphic height was deposited. Essentially a wrapper of \code{pointtransform(...,direction='height to time',depositionmodel='piecewise linear deposition rate')} kept for backwards compatibility of the package. It is recommended to use \code{pointtransform} instead of this function.
 }
 \usage{
 strattotimepointcont(x, xdep, ydep, hiatuslist = list(), unit = "sediment per time")

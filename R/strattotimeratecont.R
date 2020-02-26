@@ -17,5 +17,6 @@ function(xdep,ydep,xsig,ysig,pos=NULL,hiatuslist=list(),unit="sediment per time"
     stop("Error: Incompatible unit (either \"sediment per time\" or \"time per sediment\")")
   }
   ll=patterntransform(xdep,ydep,xpat,ypat,direction='height to time',depositionmodel='piecewise linear deposition rate',patternmode='piecewise linear',pos=pos,unit=unit,hiatuslist = hiatuslist)
-  return(ll[which(names(ll)!="report")])
+  outlist=list(age=ll$time,val=ll$val)
+  return(outlist)
 }

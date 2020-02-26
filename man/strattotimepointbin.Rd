@@ -5,7 +5,7 @@
 Transform Points and Isotope Ratios from Stratigraphic Height into Time (Binned)
 }
 \description{
-This function takes a binned deposition rate and reconstructs at what time a given stratigraphic height was deposited. Essentially a wrapper of \code{pointtransform(...,direction='height to time',depositionmodel='binned deposition rate')} kept for backwards compatibility of the package.
+This function takes a binned deposition rate and reconstructs at what time a given stratigraphic height was deposited. Essentially a wrapper of \code{pointtransform(...,direction='height to time',depositionmodel='binned deposition rate')} kept for backwards compatibility of the package. It is recommended to use \code{pointtransform} instead of this function.
 }
 \usage{
 strattotimepointbin(x, binborder, depoval, hiatuslist = list(),

@@ -6,7 +6,7 @@ Transform Points and Isotope Ratios from Time into Stratigraphic Height (Continu
 }
 
 \description{
-This function takes a continuous deposition rate to determined what stratigraphic height of a section was deposited at a given time. Essentially a wrapper of \code{pointtransform(...,direction='time to height',depositionmodel='piecewise linear deposition rate')} kept for backwards compatibility of the package.
+This function takes a continuous deposition rate to determined what stratigraphic height of a section was deposited at a given time. Essentially a wrapper of \code{pointtransform(...,direction='time to height',depositionmodel='piecewise linear deposition rate')} kept for backwards compatibility of the package. It is recommended to use \code{pointtransform} instead of this function.
 }
 
 \usage{

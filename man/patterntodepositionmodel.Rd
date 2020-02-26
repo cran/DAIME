@@ -13,7 +13,7 @@ Takes a pair of a stratigraphic and a temporal pattern to determine the depositi
 patterntodepositionmodel(xheight, yheight, 
     xage = NULL, yage = NULL,
     heightmode = 'piecewise linear', agemode = 'piecewise linear',
-    atheight=NULL,atage=NULL)
+    atheight=NULL,atage=NULL,rescalefor=1,timetype='time')
 }
 
 \arguments{
@@ -33,14 +33,23 @@ patterntodepositionmodel(xheight, yheight,
 }
 \item{atage}{OPTIONAL, default is \code{NULL}. Ages that should be included in the age model. By default, the function chooses those ages automatically
 }
+\item{rescalefor}{OPTIONAL, default is 1. Either a strictly positive number, 'temporal pattern', or 'stratigraphic pattern'. Determines what the total input into the sediment is.}
+\item{timetype}{OPTIONAL, default is "time". Either "time" or "age", determines whether input/output will be interpreted/given as time or age
+}
 }
 
 \value{
-A list containing the following entries:
+If \code{timetype='time'}, a list containing the following entries:
+\item{time }{Vector of times}
+\item{height }{Vector of stratigraphic heights}
+\item{report }{A short summary of the task performed}
+
+If \code{timetype='age'}, a list containing the following entries:
 \item{age }{Vector of ages}
 \item{height }{Vector of stratigraphic heights}
 \item{report }{A short summary of the task performed}
-\code{age} and \code{height} form the age model in the sense that the age at which \code{height[i]} was deposited is given by \code{age[i]}. Conversely at the time \code{age[i]}, \code{height[i]} was deposited
+
+\code{age}/\code{time} and \code{height} form the age model in the sense that the age/time at which \code{height[i]} was deposited is given by \code{age[i]}/\code{time[i]}. Conversely at the age/time \code{age[i]}/\code{time[i]}, \code{height[i]} was deposited
 }
 
 \references{
@@ -56,57 +65,65 @@ Niklas Hohmann
 
 \code{\link{patterntransform}} for the transformations of temporal and stratigraphic patterns (such as input rates into the sediment) using age models
 
-For an overview of the functions in the DAIME package, see its vignette (available via \code{vignette('DAIME')} )
+For an overview of the functions in the DAIME package and examples using stratigraphic data see the vignette (available via \code{vignette('DAIME')} )
 }
 
 \examples{
 ### Reconstruct deposition model based on condensation/dilution of a constant input
 #assume a constant input of pollen (this is an arbitrary choice) into the sediment through time
 #this is the observed stratigraphic pattern
-xheight=seq(0,10,by=1)
-yheight=seq(0,3,length.out=11)+rexp(11)
-plot(xheight,yheight,xlab='Stratigraphic Height',ylab='Pollen Abundance',type='l',
-  ylim=c(0,max(yheight)),main='Stratigraphic Pattern')
+my.xheight=seq(0,10,by=1)
+my.yheight=seq(0,3,length.out=11)+rexp(11)
+plot(my.xheight,my.yheight,xlab='Stratigraphic Height',ylab='Pollen Abundance',type='l',
+  ylim=c(0,max(my.yheight)),main='Stratigraphic Pattern')
 #reconstruct deposition model based on the assumption of constant pollen input in time
-resultlist=patterntodepositionmodel(xheight,yheight)
-resultlist$report
-plot(resultlist$age,resultlist$height,xlab='Age',ylab='Stratigraphic Height',type='l',
+my.agemodel=patterntodepositionmodel(xheight=my.xheight,yheight=my.yheight)
+my.agemodel$report
+agemodelage=my.agemodel$time
+agemodelheight=my.agemodel$height
+plot(agemodelage,agemodelheight,type='l',
   lwd=6,main='Reconstructed Deposition Models as Age Model')
 legend('topleft',legend='Age Model',lwd=6,col='black')
 #approximate deposition rate (=derivative of the age model)
-grad=diff(resultlist$height)/diff(resultlist$age)
-xbase=resultlist$age[-1]
+grad=diff(agemodelheight)/diff(agemodelage)
+xbase=agemodelage[-1]
 plot(xbase,grad,xlab='Time',ylab='Deposition Rate',
   main='Reconstructed Deposition Model as Deposition Rate',type='l',lwd=6,ylim=c(0,max(grad)))
 
 #now assume pollen input into the sediment is decreasing and lasts for 2 time units
-xage=c(0,2)
-yage=c(5,1)
-plot(xage,yage,type='l',xlab='Time',ylab='Pollen Input',ylim=c(0,max(yage)),
+my.xage=c(0,2)
+my.yage=c(5,1)
+plot(my.xage,my.yage,type='l',xlab='Time',ylab='Pollen Input',ylim=c(0,max(my.yage)),
   lwd=6,main='Temporal Pattern')
 #reconstruct age model based on these updated assumptions
-resultlist=patterntodepositionmodel(xheight,yheight,xage,yage)
-resultlist$report
-plot(resultlist$age,resultlist$height,xlab='Age',ylab='Stratigraphic Height',type='l',lwd=6, 
+my.agemodel2=patterntodepositionmodel(xheight=my.xheight,yheight=my.yheight,
+    xage=my.xage,yage=my.yage)
+my.agemodel2$report
+agemodelage2=my.agemodel2$time
+agemodelheight2=my.agemodel2$height
+plot(agemodelage2,agemodelheight2,type='l',lwd=6, 
   main='Reconstructed Deposition Model as Age Model')
 legend('topleft',legend='Age Model',lwd=6,col='black')
 
 #if a pattern is given as bins, use the option 'heightmode' or 'agemode'
 #define stratigraphic pattern as binned function
-xheight=seq(0,10,length.out=11) #borders of the bins used to define the stratigraphic pattern
-yheight=seq(0,3,length.out=10)+rexp(10) #note that xheight has one element more than yheight
-barplot(yheight,width=diff(xheight),ylab='Pollen Abundance',xlab='Stratigraphic Height',
+my.xheight3=seq(0,10,length.out=11) #borders of the bins used to define the stratigraphic pattern
+my.yheight3=seq(0,3,length.out=10)+rexp(10) #note that xheight has one element more than yheight
+barplot(my.yheight3,width=diff(my.xheight3),ylab='Pollen Abundance',xlab='Stratigraphic Height',
   space=0,main='Stratigraphic Pattern')
 #reconstruct age model as in the first example, but with the binned pollen observation 
 #  in stratigraphic height
 #Note that pollen input in time is again assumed to be constant 
 #(default setting if no xage and yage given)
-resultlist=patterntodepositionmodel(xheight,yheight,heightmode='binned')
-resultlist$report
-plot(resultlist$age,resultlist$height,xlab='Age',ylab='Stratigraphic Height',type='l',lwd=6,
+my.agemodel3=patterntodepositionmodel(xheight=my.xheight3,yheight=my.yheight3,heightmode='binned')
+my.agemodel3$report
+agemodelage3=my.agemodel3$time
+agemodelheight3=my.agemodel3$height
+plot(agemodelage3,agemodelheight3,type='l',lwd=6,
   main='Reconstructed Deposition Model as Age Model')
 legend('topleft',legend='Age Model',lwd=6,col='black')
 #The same option is also available for the temporal pattern (no example given)
+
 }
 
 \keyword{ Deposition rate }
