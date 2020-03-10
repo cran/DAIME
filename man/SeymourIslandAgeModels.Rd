@@ -3,18 +3,18 @@
 \docType{data}
 \title{Age models for the K/Pg boundary on Seymour Island, Antarctica}
 \description{
-Contains Age models for K/Pg boundary on Seymour Island, Antarctica. Age models are based
+Contains age models for the extinction at the K/Pg boundary on Seymour Island, Antarctica. Age models are based on
 
-*On the Stratigraphic height of the K/Pg boundary of 1007.5 m with an age of 66.04 ma (Renne et al. 2013)
+*the Stratigraphic height of the K/Pg boundary of 1007.5 m with an age of 66.04 Ma (Renne et al. 2013)
 
-*On magnetostratigraphy from Tobin et al. (2012) and ages from Gradstein et al. (2012), yielding an age of 66.389 ma at the stratigraphic height of 934.4 m.
+*magnetostratigraphy from Tobin et al. (2012) and ages from Gradstein et al. (2012), yielding an age of 66.389 Ma at the stratigraphic height of 934.4 m.
 
 The stratigraphic height of a low deposition interval is assumed to be at 959.5 m based on section A from Witts et al. (2016).
+
+Reference for stratigraphic heights is the composite section by Witts et al. (2016).
 }
 \usage{data(SeymourIslandBins)}
-\format{A list with entries, each named after the age model described in Hohmann (in preparation). Each of these age models is divided into
-An list containing two vecotrs 'agemodelage' and 'agemodelheight' corresponding to the time of deposition of a given stratigraphic height
-A description of the paraameters used to generate the age models
+\format{A list with entries named after the age models described in Hohmann (in preparation). Each of these age models consists of three vectors: 'age' and 'height' correspond to the age of deposition of a given stratigraphic height, and 'parameters' contains a description of the parameters used to generate the age models
 }
 
 \examples{
@@ -23,7 +23,8 @@ data("SeymourIslandAgeModels")
 my.agemodel=SeymourIslandAgeModels$B
 #check parameters of age model
 my.agemodel$parameters
-plot(my.agemodel$age,my.agemodel$height,type='l')
+plot(my.agemodel$age,my.agemodel$height,type='l',
+  xlim=rev(range(my.agemodel$age)),xlab='Age [Ma]',ylab='Stratigraphic Height [m]')
 }
 \source{
 Gradstein, Felix M., et al., eds. The geologic time scale 2012. elsevier, 2012.
@@ -36,7 +37,7 @@ Hohmann, Niklas. 2018. Quantifying the Effects of Changing Deposition Rates and 
 
 Witts, James D., et al. "Macrofossil evidence for a rapid and severe Cretaceous/Paleogene mass extinction in Antarctica." Nature communications 7 (2016): 11738.
 }
-\references{  None}
+
 \keyword{dataset}
 \keyword{Seymour}
 \keyword{K/Pg}

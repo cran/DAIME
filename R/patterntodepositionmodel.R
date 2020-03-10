@@ -190,18 +190,31 @@ else{
   ageout=sort(c(age2$y,height2$x))
   heightout=sort(c(age2$x,height2$y))
 }
+if(timetype=='age'){
+  ageout=-ageout
+}
+
   #### Write summary ####
   summarysentence=paste("Generated age model based on the dilution/condensation of a",agemode,"temporal pattern relative to a",heightmode,"stratigraphic pattern.")
   if(defaultage){
     summarysentence=paste(summarysentence,"Using the default option of a temporal pattern that is constant for a duration of one time unit.")
   }
+  if(rescalefor=='temporal pattern')
+    summarysentence=paste(summarysentence,' Normalized the total volume relative to the input contributed by the temporal pattern, total volume in the system is ',signif(rescaleby,digits=3),'.',sep='')
+  if(rescalefor=='stratigraphic pattern'){
+    summarysentence=paste(summarysentence,' Normalized the total volume relative to the input contributed by the stratigraphic pattern, total volume in the system is ',signif(rescaleby,digits=3),'.',sep='')
+  }
+  else{
+    summarysentence=paste(summarysentence,' Normalized the total volume in the system to ',signif(rescaleby,digits=3),'.',sep='')
+  }
+
   #### Output ####
   keepme=(!duplicated(heightout)) & (!duplicated(ageout))
   if(timetype=='time'){
     outlist=list(time=ageout[keepme],height=heightout[keepme],report=paste(summarysentence, "Results given in time."))
   }
   if(timetype=='age'){
-    outlist=list(age=ageout[keepme],height=heightout[keepme],report=paste(summarysentence, "Results given in age."))
+    outlist=list(age=-ageout[keepme],height=heightout[keepme],report=paste(summarysentence, "Results given in age."))
   }
   return(outlist)
 }
